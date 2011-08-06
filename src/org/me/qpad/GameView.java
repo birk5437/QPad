@@ -21,7 +21,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.location.*;
 import android.os.Bundle;
-
+import java.util.Collections;
 
 public class GameView extends View {
   private boolean debug = false;
@@ -56,6 +56,7 @@ public class GameView extends View {
    private Double altitude = 0.0;
    private float speed = 0.0f;
    private String exStr = " ";
+
 
 
    // Constructor
