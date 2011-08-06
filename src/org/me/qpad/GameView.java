@@ -21,7 +21,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.location.*;
 import android.os.Bundle;
-import java.util.Collections;
+import java.util.LinkedList;
 
 public class GameView extends View {
   private boolean debug = false;
@@ -56,6 +56,8 @@ public class GameView extends View {
    private Double altitude = 0.0;
    private float speed = 0.0f;
    private String exStr = " ";
+
+   private LinkedList<Block> lstBlocks;
 
 
 
@@ -98,6 +100,10 @@ public class GameView extends View {
 
     public void onProviderDisabled(String provider) {}
   };*/
+
+      lstBlocks = new LinkedList<Block>();
+
+      lstBlocks.add(new Block(50, 50));
 
       ballBounds = new RectF();
       paddleLeft = new RectF();
@@ -170,6 +176,11 @@ public class GameView extends View {
         //updateGps();
 
       }*/
+
+      for (Block b : lstBlocks)
+       {
+          b.draw(canvas);
+       }
 
       //paint.setColor(Color.GRAY);
       canvas.drawRect(paddleTop, paint);
