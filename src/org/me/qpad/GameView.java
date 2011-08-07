@@ -106,7 +106,7 @@ public class GameView extends View {
 
       lstBlocks = new LinkedList<Block>();
 
-      int startX = 100;
+      int startX = 80;
       int startY = 100;
       int width = 0;
       int blkX = startX;
