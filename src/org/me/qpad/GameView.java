@@ -141,28 +141,48 @@ public class GameView extends View {
 
    private void detectBallCollisions()
    {
+       boolean changeX = false;
+       
        if(ballBounds.intersect(paddleTop) || ballBounds.intersect(paddleBottom))
        {
+           changeX = false;
            ballSpeedY *= -1;
-       }
-       else if(ballBounds.intersect(paddleLeft) || ballBounds.intersect(paddleRight))
-       {
-           boolean changeX = true;
-           if (ballBounds.left > paddleRight.left && ballBounds.right < paddleRight.right)
+           if (ballSpeedX > 0 && ballX < (paddleTop.left + (paddleLength / 2)))
            {
-               ballSpeedY *= -1;
-               changeX = false;
+               changeX = true;
            }
-           else if(ballBounds.left > paddleLeft.left && ballBounds.right < paddleLeft.right)
+           else if (ballSpeedX < 0 && ballX > (paddleTop.left + (paddleLength / 2)))
            {
-               ballSpeedY *= -1;
-               changeX = false;
+               changeX = true;
            }
+
            if(changeX)
            {
                ballSpeedX *= -1;
            }
        }
+       else if(ballBounds.intersect(paddleLeft) || ballBounds.intersect(paddleRight))
+       {
+           changeX = true;
+           if (ballX > paddleRight.left && ballBounds.right < paddleRight.right)
+           {
+               ballSpeedY *= -1;
+               //changeX = false;
+           }
+           else if(ballBounds.left > paddleLeft.left && ballBounds.right < paddleLeft.right)
+           {
+               ballSpeedY *= -1;
+               //changeX = false;
+           }
+
+           if(changeX)
+           {
+               ballSpeedX *= -1;
+           }
+
+       }
+
+
        else{
 
            LinkedList<Block> blocksToRemove = new LinkedList<Block>();
@@ -295,7 +315,7 @@ public class GameView extends View {
 
       // Delay
       try {
-         Thread.sleep(20);
+         Thread.sleep(10);
       } catch (InterruptedException e) { }
 
       invalidate();  // Force a re-draw
