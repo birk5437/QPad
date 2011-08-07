@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.location.*;
 import android.os.Bundle;
 import java.util.LinkedList;
+import java.lang.Math;
 
 public class GameView extends View {
   private boolean debug = false;
@@ -32,7 +33,7 @@ public class GameView extends View {
    private int yMax;
    private float ballRadius = 4; // Ball's radius
    private float ballX = ballRadius + 50;  // Ball's center (x,y)
-   private float ballY = ballRadius + 50;
+   private float ballY = ballRadius + 75;
    private float ballSpeedX = 2;  // Ball's speed (x,y)
    private float ballSpeedY = 2;
    private float paddleX = 20;
@@ -109,10 +110,10 @@ public class GameView extends View {
       int blkX = startX;
       int blkY = startY;
 
-      for (int i = 0; i < 7; i++)
+      for (int i = 0; i < 10; i++)
       {
           Block b;
-          for (int j = 0; j < 5; j++)
+          for (int j = 0; j < 10; j++)
           {
               b = new Block(blkX, blkY);
               lstBlocks.add(b);
@@ -168,17 +169,67 @@ public class GameView extends View {
 
            for (Block b : lstBlocks)
            {
-               RectF r = b.getRect();
-               if (ballBounds.intersect(r))
+               RectF blockBounds = b.getRect();
+               if (ballBounds.intersect(blockBounds))
                {
-                    if (ballBounds.left > r.left && ballBounds.right < r.right)
+                    float horizDiff = 0;
+                    float vertDiff = 0;
+
+                    float leftDiff = 0;
+                    float rightDiff = 0;
+                    float topDiff = 0;
+                    float bottomDiff = 0;
+
+                    if (ballBounds.right > blockBounds.left)
+                        leftDiff = Math.abs(blockBounds.left - ballBounds.right);
+
+                    if (ballBounds.left < blockBounds.right)
+                        rightDiff = Math.abs(blockBounds.right - ballBounds.left);
+
+                    if (ballBounds.bottom > blockBounds.top)
+                        topDiff = Math.abs(blockBounds.top - ballBounds.bottom);
+
+                    if (ballBounds.top < blockBounds.bottom)
+                        bottomDiff = Math.abs(blockBounds.bottom - ballBounds.top);
+
+                    if (ballSpeedX > 0)
+                        horizDiff = leftDiff;
+                    else
+                        horizDiff = rightDiff;
+
+                    if (ballSpeedY > 0)
+                        vertDiff = topDiff;
+                    else
+                        vertDiff = bottomDiff;
+
+                    if(horizDiff < vertDiff)
+                        ballSpeedX *= -1;
+                    else if (horizDiff > vertDiff)
+                        ballSpeedY *= -1;
+
+                    else if (horizDiff == vertDiff)
+                    {
+                        ballSpeedX *= -1;
+                        ballSpeedY *= -1;
+                    }
+
+
+
+
+                    
+
+                    /*if (ballBounds.bottom > blockBounds.top ||
+                        ballBounds.top < blockBounds.bottom)
                     {
                         ballSpeedY *= -1;
                     }
-                    else
+                    else if(ballBounds.left < blockBounds.right ||
+                             ballBounds.right > blockBounds.left)
                     {
                         ballSpeedX *= -1;
-                    }
+                    }*/
+                   //ballSpeedX *= -1;
+                   //ballSpeedY *= -1;
                     //lstBlocks.remove(b);
                     blocksToRemove.add(b);
                     break;
