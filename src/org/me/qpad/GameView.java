@@ -27,6 +27,8 @@ import java.lang.Math;
 public class GameView extends View {
   private boolean debug = false;
 
+   private int paddleBottomMargin = 20;
+   private int score = 0;
    private int xMin = 0;          // This view's bounds
    private int xMax;
    private int yMin = 0;
@@ -251,6 +253,7 @@ public class GameView extends View {
                    //ballSpeedX *= -1;
                    //ballSpeedY *= -1;
                     //lstBlocks.remove(b);
+                    score++;
                     blocksToRemove.add(b);
                     break;
                }
@@ -270,7 +273,12 @@ public class GameView extends View {
       paddleLeft.set(1, paddleY, paddleWidth + 1, paddleY + paddleLength);
       paddleRight.set(xMax - paddleWidth, paddleY, xMax, paddleY + paddleLength);
       paddleTop.set(paddleX, 1, paddleX + paddleLength, paddleWidth + 1);
-      paddleBottom.set(paddleX, yMax - paddleWidth, paddleX + paddleLength, yMax);
+      paddleBottom.set(paddleX, yMax - paddleWidth - paddleBottomMargin, paddleX + paddleLength, yMax - paddleBottomMargin);
+      
+      paint.setColor(Color.GREEN);
+      canvas.drawText("Score: " + score, 5, yMax - 5, paint);
+
+
       paint.setColor(Color.GRAY);
       //paint.setTextSize(20);
       //int test = Float.floatToIntBits(paddleXFixed);
