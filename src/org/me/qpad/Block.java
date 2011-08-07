@@ -32,8 +32,18 @@ public class Block {
 
             xPos = x;
             yPos = y;
-            width = 5;
-            height = 5;
+            width = 16;
+            height = 16;
+    }
+
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public int getHeight()
+    {
+        return height;
     }
 
     public void draw(Canvas c)

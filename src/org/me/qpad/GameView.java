@@ -31,8 +31,8 @@ public class GameView extends View {
    private int yMin = 0;
    private int yMax;
    private float ballRadius = 4; // Ball's radius
-   private float ballX = ballRadius + 100;  // Ball's center (x,y)
-   private float ballY = ballRadius + 100;
+   private float ballX = ballRadius + 50;  // Ball's center (x,y)
+   private float ballY = ballRadius + 50;
    private float ballSpeedX = 2;  // Ball's speed (x,y)
    private float ballSpeedY = 2;
    private float paddleX = 20;
@@ -103,7 +103,26 @@ public class GameView extends View {
 
       lstBlocks = new LinkedList<Block>();
 
-      lstBlocks.add(new Block(50, 50));
+      int startX = 100;
+      int startY = 100;
+      int width = 0;
+      int blkX = startX;
+      int blkY = startY;
+
+      for (int i = 0; i < 7; i++)
+      {
+          Block b;
+          for (int j = 0; j < 5; j++)
+          {
+              b = new Block(blkX, blkY);
+              lstBlocks.add(b);
+              blkY += b.getHeight() + 1;
+              width = b.getWidth();
+          }
+          blkX += width + 1;
+          blkY = startY;
+      }
+      
 
       ballBounds = new RectF();
       paddleLeft = new RectF();
@@ -143,6 +162,33 @@ public class GameView extends View {
                ballSpeedX *= -1;
            }
        }
+       else{
+
+           LinkedList<Block> blocksToRemove = new LinkedList<Block>();
+
+           for (Block b : lstBlocks)
+           {
+               RectF r = b.getRect();
+               if (ballBounds.intersect(r))
+               {
+                    if (ballBounds.left > r.left && ballBounds.right < r.right)
+                    {
+                        ballSpeedY *= -1;
+                    }
+                    else
+                    {
+                        ballSpeedX *= -1;
+                    }
+                    //lstBlocks.remove(b);
+                    blocksToRemove.add(b);
+                    break;
+               }
+           }
+           for (Block b : blocksToRemove)
+           {
+               lstBlocks.remove(b);
+           }
+       }
    }
 
    // Called back to draw the view. Also called after invalidate().
@@ -178,9 +224,9 @@ public class GameView extends View {
       }*/
 
       for (Block b : lstBlocks)
-       {
-          b.draw(canvas);
-       }
+      {
+        b.draw(canvas);
+      }
 
       //paint.setColor(Color.GRAY);
       canvas.drawRect(paddleTop, paint);
