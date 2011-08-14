@@ -23,6 +23,7 @@ import android.location.*;
 import android.os.Bundle;
 import java.util.LinkedList;
 import java.lang.Math;
+import android.content.Intent;
 
 public class GameView extends View {
   private boolean debug = false;
@@ -244,8 +245,13 @@ public class GameView extends View {
        drawGame = false;
        this.setEnabled(false);
        //this.getParent().requestLayout();
+       Intent i = new Intent(parentContext, QPad.class);
+       
        this.getParent().clearChildFocus(this.findFocus());
        this.invalidate();
+       parentContext.startActivity(i);
+       ballX = 20;
+       ballY = 20;
        //this.setFocusable(false);
        //this.getRootView().showContextMenu();
        //Thread.yield();
