@@ -72,7 +72,11 @@ public class GameView extends View {
       super(context);
       parentContext = context;
 
+      drawGame = true;
       lstBlocks = new LinkedList<Block>();
+
+      ballX = 40;
+      ballY = 20;
 
       int startX = 80;
       int startY = 100;
@@ -156,21 +160,25 @@ public class GameView extends View {
        //detect collisions with walls
        else if(ballX + ballRadius > xMax) {
          
-         
-         gameOver();
+
+         drawGame = false;
+         //gameOver();
          //ballX = xMax-ballRadius;
          //ballSpeedX = -ballSpeedX;
       } else if (ballX - ballRadius < xMin) {
-         gameOver();
+         drawGame = false;
+         //gameOver();
          //ballSpeedX = -ballSpeedX;
          //ballX = xMin+ballRadius;
       }
       if (ballY + ballRadius > yMax) {
-         gameOver();
+         drawGame = false;
+         //gameOver();
          //ballSpeedY = -ballSpeedY;
          //ballY = yMax - ballRadius;
       } else if (ballY - ballRadius < yMin) {
-         gameOver();
+         drawGame = false;
+         //gameOver();
          //ballSpeedY = -ballSpeedY;
          //ballY = yMin + ballRadius;
       }
@@ -240,18 +248,28 @@ public class GameView extends View {
        }
    }
 
-   private void gameOver()
+   private void gameOver(Canvas c)
    {
-       drawGame = false;
-       this.setEnabled(false);
+       //drawGame = false;
+       //this.setEnabled(false);
        //this.getParent().requestLayout();
        Intent i = new Intent(parentContext, QPad.class);
-       
-       this.getParent().clearChildFocus(this.findFocus());
-       this.invalidate();
-       parentContext.startActivity(i);
        ballX = 20;
        ballY = 20;
+
+       ballSpeedX = 0;
+       ballSpeedY = 0;
+       //this.getParent().clearChildFocus(this.findFocus());
+       invalidate();
+       c.drawText("Game Over!", xMax / 2, yMax / 2, paint);
+       try{
+       Thread.sleep(500);
+       }
+       catch (InterruptedException e) { }
+
+       
+
+       parentContext.startActivity(i);
        //this.setFocusable(false);
        //this.getRootView().showContextMenu();
        //Thread.yield();
@@ -262,41 +280,47 @@ public class GameView extends View {
    @Override
    protected void onDraw(Canvas canvas) {
       // Draw the ball
-      ballBounds.set(ballX-ballRadius, ballY-ballRadius, ballX+ballRadius, ballY+ballRadius);
-      paddleLeft.set(1, paddleY, paddleWidth + 1, paddleY + paddleLength);
-      paddleRight.set(xMax - paddleWidth, paddleY, xMax, paddleY + paddleLength);
-      paddleTop.set(paddleX, 1, paddleX + paddleLength, paddleWidth + 1);
-      paddleBottom.set(paddleX, yMax - paddleWidth - paddleBottomMargin, paddleX + paddleLength, yMax - paddleBottomMargin);
-      
-      paint.setColor(Color.GREEN);
-      canvas.drawText("Score: " + score, 5, yMax - 5, paint);
-
-
-      paint.setColor(Color.GRAY);
-      //paint.setTextSize(20);
-      //int test = Float.floatToIntBits(paddleXFixed);
-      canvas.drawOval(ballBounds, paint);
-
-      for (Block b : lstBlocks)
+      if (drawGame == false)
       {
-        b.draw(canvas);
+          gameOver(canvas);
       }
+      else
+      {
+          ballBounds.set(ballX-ballRadius, ballY-ballRadius, ballX+ballRadius, ballY+ballRadius);
+          paddleLeft.set(1, paddleY, paddleWidth + 1, paddleY + paddleLength);
+          paddleRight.set(xMax - paddleWidth, paddleY, xMax, paddleY + paddleLength);
+          paddleTop.set(paddleX, 1, paddleX + paddleLength, paddleWidth + 1);
+          paddleBottom.set(paddleX, yMax - paddleWidth - paddleBottomMargin, paddleX + paddleLength, yMax - paddleBottomMargin);
 
-      //paint.setColor(Color.GRAY);
-      canvas.drawRect(paddleTop, paint);
-      canvas.drawRect(paddleBottom, paint);
-      canvas.drawRect(paddleLeft, paint);
-      canvas.drawRect(paddleRight, paint);
-      update();
+          paint.setColor(Color.GREEN);
+          canvas.drawText("Score: " + score, 5, yMax - 5, paint);
 
 
-      // Delay
-      try {
-         Thread.sleep(10);
-      } catch (InterruptedException e) { }
+          paint.setColor(Color.GRAY);
+          //paint.setTextSize(20);
+          //int test = Float.floatToIntBits(paddleXFixed);
+          canvas.drawOval(ballBounds, paint);
 
-      if (drawGame)
-        invalidate();  // Force a re-draw
+          for (Block b : lstBlocks)
+          {
+            b.draw(canvas);
+          }
+
+          //paint.setColor(Color.GRAY);
+          canvas.drawRect(paddleTop, paint);
+          canvas.drawRect(paddleBottom, paint);
+          canvas.drawRect(paddleLeft, paint);
+          canvas.drawRect(paddleRight, paint);
+          update();
+
+
+          // Delay
+          try {
+             Thread.sleep(10);
+          } catch (InterruptedException e) { }
+
+            invalidate();  // Force a re-draw
+       }
    }
 
    // Detect collision and update the position of the ball.
