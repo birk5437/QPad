@@ -242,6 +242,14 @@ public class GameView extends View {
    private void gameOver()
    {
        drawGame = false;
+       this.setEnabled(false);
+       //this.getParent().requestLayout();
+       this.getParent().clearChildFocus(this.findFocus());
+       this.invalidate();
+       //this.setFocusable(false);
+       //this.getRootView().showContextMenu();
+       //Thread.yield();
+       //this.clearFocus();
    }
 
    // Called back to draw the view. Also called after invalidate().
