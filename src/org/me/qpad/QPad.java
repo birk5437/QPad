@@ -38,7 +38,7 @@ public class QPad extends Activity {
 
     private void findAllViewsById() {
         btnStart = (Button) findViewById(R.id.btnStart);
-        btnExit = (Button) findViewById(R.id.btnExit);
+        //btnExit = (Button) findViewById(R.id.btnExit);
     }
 
     public void longToast(CharSequence message) {

@@ -144,16 +144,17 @@ public class GameView extends View {
    private void detectBallCollisions()
    {
        boolean changeX = false;
+       boolean changeY = false;
        
        if(ballBounds.intersect(paddleTop) || ballBounds.intersect(paddleBottom))
        {
            changeX = false;
            ballSpeedY *= -1;
-           if (ballSpeedX > 0 && ballX < (paddleTop.left + (paddleLength / 2)))
+           if (ballSpeedX > 0 && ballX < (paddleTop.left + (paddleLength / 4.5)))
            {
                changeX = true;
            }
-           else if (ballSpeedX < 0 && ballX > (paddleTop.left + (paddleLength / 2)))
+           else if (ballSpeedX < 0 && ballX > (paddleTop.right - (paddleLength / 4.5)))
            {
                changeX = true;
            }
@@ -165,21 +166,22 @@ public class GameView extends View {
        }
        else if(ballBounds.intersect(paddleLeft) || ballBounds.intersect(paddleRight))
        {
-           changeX = true;
-           if (ballX > paddleRight.left && ballBounds.right < paddleRight.right)
+           ballSpeedX *= -1;
+           changeY = false;
+
+           if (ballSpeedY > 0 && ballY < (paddleRight.top + (paddleLength / 4.5)))
            {
-               ballSpeedY *= -1;
-               //changeX = false;
-           }
-           else if(ballBounds.left > paddleLeft.left && ballBounds.right < paddleLeft.right)
-           {
-               ballSpeedY *= -1;
-               //changeX = false;
+               changeY = true;
            }
 
-           if(changeX)
+           else if (ballSpeedY < 0 && ballY > (paddleRight.bottom - (paddleLength / 4.5)))
            {
-               ballSpeedX *= -1;
+               changeY = true;
+           }
+
+           if(changeY)
+           {
+               ballSpeedY *= -1;
            }
 
        }
@@ -202,6 +204,7 @@ public class GameView extends View {
                     float topDiff = 0;
                     float bottomDiff = 0;
 
+                    //check which sides intersect
                     if (ballBounds.right > blockBounds.left)
                         leftDiff = Math.abs(blockBounds.left - ballBounds.right);
 
@@ -214,16 +217,17 @@ public class GameView extends View {
                     if (ballBounds.top < blockBounds.bottom)
                         bottomDiff = Math.abs(blockBounds.bottom - ballBounds.top);
 
-                    if (ballSpeedX > 0)
+                    if (ballSpeedX > 0) //check ball direction for X-axis intersect
                         horizDiff = leftDiff;
                     else
                         horizDiff = rightDiff;
 
-                    if (ballSpeedY > 0)
+                    if (ballSpeedY > 0) //check ball direction for Y-axis intersect
                         vertDiff = topDiff;
                     else
                         vertDiff = bottomDiff;
 
+                    //compare diffs
                     if(horizDiff < vertDiff)
                         ballSpeedX *= -1;
                     else if (horizDiff > vertDiff)
@@ -235,24 +239,6 @@ public class GameView extends View {
                         ballSpeedY *= -1;
                     }
 
-
-
-
-                    
-
-                    /*if (ballBounds.bottom > blockBounds.top ||
-                        ballBounds.top < blockBounds.bottom)
-                    {
-                        ballSpeedY *= -1;
-                    }
-                    else if(ballBounds.left < blockBounds.right ||
-                             ballBounds.right > blockBounds.left)
-                    {
-                        ballSpeedX *= -1;
-                    }*/
-                   //ballSpeedX *= -1;
-                   //ballSpeedY *= -1;
-                    //lstBlocks.remove(b);
                     score++;
                     blocksToRemove.add(b);
                     break;
