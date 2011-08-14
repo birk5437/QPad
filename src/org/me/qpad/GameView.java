@@ -27,6 +27,7 @@ import java.lang.Math;
 public class GameView extends View {
   private boolean debug = false;
 
+   private boolean drawGame = true;
    private int paddleBottomMargin = 20;
    private int score = 0;
    private int xMin = 0;          // This view's bounds
@@ -59,6 +60,7 @@ public class GameView extends View {
    private Double altitude = 0.0;
    private float speed = 0.0f;
    private String exStr = " ";
+   Context parentContext;
 
    private LinkedList<Block> lstBlocks;
 
@@ -67,42 +69,7 @@ public class GameView extends View {
    // Constructor
    public GameView(Context context) {
       super(context);
-      //locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-    /*locationListener = new LocationListener() {
-    public void onLocationChanged(Location location) {
-      latitude = location.getLatitude();
-      longitude = location.getLongitude();
-
-      altitude = location.getAltitude();
-      speed = location.getSpeed();
-
-      if (latitude < 0)
-          latitude *= -1;
-      if (longitude < 0)
-          longitude *= -1;
-
-      try{
-
-      drawLong = (longitude - Math.round(Float.parseFloat(Double.toString(longitude)))) * 100;
-
-      //drawLong = (longitude - Float.floatToIntBits(Float.parseFloat(Double.toString(longitude)))) * 100;
-      drawLat = (latitude - Math.round(Float.parseFloat(Double.toString(latitude)))) * 100;
-        }
-      catch (Exception ex)
-      {
-          exStr = ex.toString();
-      }
-      // Called when a new location is found by the network location provider.
-      //makeUseOfNewLocation(location);
-    }
-
-    public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-    public void onProviderEnabled(String provider) {}
-
-    public void onProviderDisabled(String provider) {}
-  };*/
+      parentContext = context;
 
       lstBlocks = new LinkedList<Block>();
 
@@ -138,7 +105,6 @@ public class GameView extends View {
       this.requestFocus();
       this.setFocusableInTouchMode(true);
 
-      //updateGps();
    }
 
    private void detectBallCollisions()
@@ -185,6 +151,28 @@ public class GameView extends View {
            }
 
        }
+
+       //detect collisions with walls
+       else if(ballX + ballRadius > xMax) {
+         
+         
+         gameOver();
+         //ballX = xMax-ballRadius;
+         //ballSpeedX = -ballSpeedX;
+      } else if (ballX - ballRadius < xMin) {
+         gameOver();
+         //ballSpeedX = -ballSpeedX;
+         //ballX = xMin+ballRadius;
+      }
+      if (ballY + ballRadius > yMax) {
+         gameOver();
+         //ballSpeedY = -ballSpeedY;
+         //ballY = yMax - ballRadius;
+      } else if (ballY - ballRadius < yMin) {
+         gameOver();
+         //ballSpeedY = -ballSpeedY;
+         //ballY = yMin + ballRadius;
+      }
 
 
        else{
@@ -251,6 +239,11 @@ public class GameView extends View {
        }
    }
 
+   private void gameOver()
+   {
+       drawGame = false;
+   }
+
    // Called back to draw the view. Also called after invalidate().
    @Override
    protected void onDraw(Canvas canvas) {
@@ -270,24 +263,6 @@ public class GameView extends View {
       //int test = Float.floatToIntBits(paddleXFixed);
       canvas.drawOval(ballBounds, paint);
 
-      /*if(debug)
-      {
-        //canvas.drawText("BallX: " + Float.toString(ballX), 50, 30, paint);
-        //canvas.drawText("BallY: " + Float.toString(ballY), 50, 40, paint);
-        //canvas.drawText("PaddleXFixed: " + Float.toString(paddleXFixed), 50, 50, paint);
-        //canvas.drawText("PaddleYFixed: " + Float.toString(paddleYFixed), 50, 60, paint);
-        canvas.drawText(exStr, 40, 130, paint);
-        //canvas.drawText("Lat: " + Float.parseFloat(Double.toHexString(latitude + (xMax / 2))), 40, 40, paint);
-        canvas.drawText("Lat: " + Double.toString(latitude), 40, 40, paint);
-        canvas.drawText("Long: " + Double.toString(longitude), 40, 55, paint);
-        canvas.drawText("ALT: " + Double.toString(altitude), 40, 70, paint);
-        canvas.drawText("Speed: " + Float.toString(speed), 40, 85, paint);
-        canvas.drawText("DrawLat: " + Double.toString(drawLat), 40, 100, paint);
-        canvas.drawText("DrawLong: " + Double.toString(drawLong), 40, 115, paint);
-        //updateGps();
-
-      }*/
-
       for (Block b : lstBlocks)
       {
         b.draw(canvas);
@@ -298,12 +273,6 @@ public class GameView extends View {
       canvas.drawRect(paddleBottom, paint);
       canvas.drawRect(paddleLeft, paint);
       canvas.drawRect(paddleRight, paint);
-      //canvas.drawPoint(Float.parseFloat(Double.toHexString(longitude + (xMax / 2))), Float.parseFloat(Double.toHexString(latitude + (yMax / 2))), paint);
-      //canvas.drawText("HI BECKY!!", ballX, ballX, paint);
-      //canvas.drawPoint(Float.parseFloat(Double.toHexString(drawLong + (xMax / 2))), Float.parseFloat(Double.toHexString(drawLat + (yMax / 2))), paint);
-      //canvas.drawte
-      //updateGps();
-      // Update the position of the ball, including collision detection and reaction.
       update();
 
 
@@ -312,15 +281,11 @@ public class GameView extends View {
          Thread.sleep(10);
       } catch (InterruptedException e) { }
 
-      invalidate();  // Force a re-draw
+      if (drawGame)
+        invalidate();  // Force a re-draw
    }
 
    // Detect collision and update the position of the ball.
-   /*private void updateGps()
-    {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-    }*/
 
    private void update() {
       // Get new (x,y) position
@@ -328,20 +293,7 @@ public class GameView extends View {
       ballX += ballSpeedX;
       ballY += ballSpeedY;
       // Detect collision and react
-      if (ballX + ballRadius > xMax) {
-         ballSpeedX = -ballSpeedX;
-         ballX = xMax-ballRadius;
-      } else if (ballX - ballRadius < xMin) {
-         ballSpeedX = -ballSpeedX;
-         ballX = xMin+ballRadius;
-      }
-      if (ballY + ballRadius > yMax) {
-         ballSpeedY = -ballSpeedY;
-         ballY = yMax - ballRadius;
-      } else if (ballY - ballRadius < yMin) {
-         ballSpeedY = -ballSpeedY;
-         ballY = yMin + ballRadius;
-      }
+
       //paddleX = ballX - 35;
       //paddleY = ballY - 35;
    }
