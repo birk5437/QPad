@@ -161,26 +161,26 @@ public class GameView extends View {
        else if(ballX + ballRadius > xMax) {
          
 
-         drawGame = false;
+         //drawGame = false;
          //gameOver();
-         //ballX = xMax-ballRadius;
-         //ballSpeedX = -ballSpeedX;
+         ballX = xMax-ballRadius;
+         ballSpeedX = -ballSpeedX;
       } else if (ballX - ballRadius < xMin) {
-         drawGame = false;
+         //drawGame = false;
          //gameOver();
-         //ballSpeedX = -ballSpeedX;
-         //ballX = xMin+ballRadius;
+         ballSpeedX = -ballSpeedX;
+         ballX = xMin+ballRadius;
       }
       if (ballY + ballRadius > yMax) {
-         drawGame = false;
+         //drawGame = false;
          //gameOver();
-         //ballSpeedY = -ballSpeedY;
-         //ballY = yMax - ballRadius;
+         ballSpeedY = -ballSpeedY;
+         ballY = yMax - ballRadius;
       } else if (ballY - ballRadius < yMin) {
-         drawGame = false;
+         //drawGame = false;
          //gameOver();
-         //ballSpeedY = -ballSpeedY;
-         //ballY = yMin + ballRadius;
+         ballSpeedY = -ballSpeedY;
+         ballY = yMin + ballRadius;
       }
 
 
@@ -265,7 +265,11 @@ public class GameView extends View {
        try{
        Thread.sleep(500);
        }
-       catch (InterruptedException e) { }
+
+       catch (Exception e) { }
+
+       //try{this.set}
+       //catch (Exception e){}
 
        
 
@@ -299,7 +303,7 @@ public class GameView extends View {
           paint.setColor(Color.GRAY);
           //paint.setTextSize(20);
           //int test = Float.floatToIntBits(paddleXFixed);
-          canvas.drawOval(ballBounds, paint);
+          canvas.drawRect(ballBounds, paint);
 
           for (Block b : lstBlocks)
           {

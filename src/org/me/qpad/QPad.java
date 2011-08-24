@@ -17,6 +17,7 @@ import android.view.View;
  */
 public class QPad extends Activity {
 
+    private GameView g;
     private Button btnStart;
     private Button btnExit;
 
@@ -24,10 +25,13 @@ public class QPad extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        setContentView(R.layout.main);
+        //setContentView(R.layout.main);
+        //setContentView(R.layout.main);
         findAllViewsById();
 
-        btnStart.setOnClickListener(btnStartListener);
+        //btnStart.setOnClickListener(btnStartListener);
+        findAllViewsById();
+        startGameView();
         // ToDo add your GUI initialization code here        
     }
 
@@ -39,7 +43,7 @@ public class QPad extends Activity {
     private void findAllViewsById() {
         btnStart = (Button) findViewById(R.id.btnStart);
         //btnExit = (Button) findViewById(R.id.btnExit);
-    }
+        g = (GameView) this.findViewById(R.id.gameView);}
 
     public void longToast(CharSequence message) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show();

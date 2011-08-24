@@ -14,5 +14,7 @@
         android:layout_below="@id/txtTitle"
         android:layout_alignParentLeft="true"
         android:text="Start"/>
+
+    <View android:id="@+id/gameView" />
         
 </RelativeLayout>
