@@ -28,7 +28,7 @@ import android.content.Intent;
 public class GameView extends View {
   private boolean debug = false;
 
-   private boolean drawGame = true;
+   private boolean gameOver = false;
    private int paddleBottomMargin = 20;
    private int score = 0;
    private int xMin = 0;          // This view's bounds
@@ -81,6 +81,7 @@ public class GameView extends View {
 
    private RectF blocksRect;
 
+   GraphicButton btnStart;
 
    private LinkedList<Block> lstBlocks;
 
@@ -91,19 +92,7 @@ public class GameView extends View {
       super(context);
       parentContext = context;
 
-      drawGame = true;
-
-      ballX = 40;
-      ballY = 20;
-
-      int width = 0;
-      int blkX = blocksMinX;
-      int blkY = blocksMinY;
-
-      set1 = new BlockSet(70, 100, 20, 10, 2);
-      lstBlocks = set1.getBlocks();
-      blocksRect = set1.getBounds();
-      
+      resetGame();
 
       ballBounds = new RectF();
       paddleLeft = new RectF();
@@ -165,13 +154,12 @@ public class GameView extends View {
 
        //detect collisions with walls
        else if(ballX + ballRadius > xMax) {
-         
-
-         //drawGame = false;
+         gameOver = true;
          //gameOver();
          ballX = xMax-ballRadius;
          ballSpeedX = -ballSpeedX;
       } else if (ballX - ballRadius < xMin) {
+         //drawGame = false;
          //drawGame = false;
          //gameOver();
          ballSpeedX = -ballSpeedX;
@@ -256,6 +244,25 @@ public class GameView extends View {
        }
    }
 
+   private void resetGame()
+   {
+      score = 0;
+      gameOver = false;
+
+      btnStart = new GraphicButton(50, 50, 40, 15);
+
+      ballX = 40;
+      ballY = 20;
+
+      //int width = 0;
+      //int blkX = blocksMinX;
+      //int blkY = blocksMinY;
+
+      set1 = new BlockSet(70, 100, 20, 10, 2);
+      lstBlocks = set1.getBlocks();
+      blocksRect = set1.getBounds();
+   }
+
    private void gameOver(Canvas c)
    {
        //drawGame = false;
@@ -292,9 +299,9 @@ public class GameView extends View {
    @Override
    protected void onDraw(Canvas canvas) {
       // Draw the ball
-      if (drawGame == false)
+      if (gameOver)
       {
-          gameOver(canvas);
+          canvas.drawRect(btnStart.getRect(), paint);
       }
       else
       {
@@ -331,8 +338,10 @@ public class GameView extends View {
           //   Thread.sleep(0);
           //} catch (InterruptedException e) { }
 
-            invalidate();  // Force a re-draw
+            //invalidate();  // Force a re-draw
        }
+      invalidate();
+
    }
 
    // Detect collision and update the position of the ball.
@@ -389,27 +398,39 @@ public class GameView extends View {
    public boolean onTouchEvent(MotionEvent event) {
       float currentX = event.getX();
       float currentY = event.getY();
-      float deltaX, deltaY;
-      float scalingFactor = 5.0f / ((xMax > yMax) ? yMax : xMax);
-      switch (event.getAction()) {
-         case MotionEvent.ACTION_MOVE:
-            // Modify rotational angles according to movement
-            deltaX = currentX - previousX;
-            deltaY = currentY - previousY;
-            //ballSpeedX += deltaX * scalingFactor;
-            //ballSpeedY += deltaY * scalingFactor;
-            
-            
 
-
-            paddleX = paddleX + (currentX - previousX);
-            paddleY = paddleY + (currentY - previousY);
-
-
+      if (gameOver)
+      {
+          RectF touchRect = new RectF(currentX - 1, currentY - 1, currentX + 1, currentY + 1);
+          if (touchRect.intersect(btnStart.getRect()))
+          {
+              resetGame();
+          }
       }
-      // Save current x, y
-      previousX = currentX;
-      previousY = currentY;
+      else
+      {
+          float deltaX, deltaY;
+          //float scalingFactor = 5.0f / ((xMax > yMax) ? yMax : xMax);
+          switch (event.getAction()) {
+             case MotionEvent.ACTION_MOVE:
+                // Modify rotational angles according to movement
+                deltaX = currentX - previousX;
+                deltaY = currentY - previousY;
+                //ballSpeedX += deltaX * scalingFactor;
+                //ballSpeedY += deltaY * scalingFactor;
+
+
+
+
+                paddleX = paddleX + (currentX - previousX);
+                paddleY = paddleY + (currentY - previousY);
+
+
+          }
+          // Save current x, y
+          previousX = currentX;
+          previousY = currentY;
+      }
       return true;  // Event handled
    }
 
