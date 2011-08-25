@@ -19,7 +19,7 @@ import android.graphics.RectF;
 import android.view.View;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.location.*;
+//import android.location.*;
 import android.os.Bundle;
 import java.util.LinkedList;
 import java.lang.Math;
@@ -63,9 +63,26 @@ public class GameView extends View {
    private String exStr = " ";
    Context parentContext;
 
+   float horizDiff = 0;
+   float vertDiff = 0;
+   float leftDiff = 0;
+   float rightDiff = 0;
+   float topDiff = 0;
+   float bottomDiff = 0;
+
+   int blocksMinX = 70;
+   int blocksMinY = 100;
+   int blocksMaxX = 100;
+   int blocksMaxY = 220;
+   int blockSetWidth = 0; //always leave these set to 0 - use the pixel values above
+   int blockSetHeight = 0;//always leave these set to 0 - use the pixel values above
+
+   private RectF blocksRect;
+
+
    private LinkedList<Block> lstBlocks;
 
-
+   LinkedList<Block> blocksToRemove = new LinkedList<Block>();
 
    // Constructor
    public GameView(Context context) {
@@ -73,30 +90,17 @@ public class GameView extends View {
       parentContext = context;
 
       drawGame = true;
-      lstBlocks = new LinkedList<Block>();
 
       ballX = 40;
       ballY = 20;
 
-      int startX = 80;
-      int startY = 100;
       int width = 0;
-      int blkX = startX;
-      int blkY = startY;
+      int blkX = blocksMinX;
+      int blkY = blocksMinY;
 
-      for (int i = 0; i < 10; i++)
-      {
-          Block b;
-          for (int j = 0; j < 10; j++)
-          {
-              b = new Block(blkX, blkY);
-              lstBlocks.add(b);
-              blkY += b.getHeight() + 1;
-              width = b.getWidth();
-          }
-          blkX += width + 1;
-          blkY = startY;
-      }
+      BlockSet set1 = new BlockSet(70, 100, 20, 10, 1);
+      lstBlocks = set1.getBlocks();
+      blocksRect = set1.getBounds();
       
 
       ballBounds = new RectF();
@@ -184,22 +188,20 @@ public class GameView extends View {
       }
 
 
-       else{
-
-           LinkedList<Block> blocksToRemove = new LinkedList<Block>();
+       else if(ballBounds.intersect(blocksRect)){
 
            for (Block b : lstBlocks)
            {
                RectF blockBounds = b.getRect();
                if (ballBounds.intersect(blockBounds))
                {
-                    float horizDiff = 0;
-                    float vertDiff = 0;
+                    horizDiff = 0;
+                    vertDiff = 0;
 
-                    float leftDiff = 0;
-                    float rightDiff = 0;
-                    float topDiff = 0;
-                    float bottomDiff = 0;
+                    leftDiff = 0;
+                    rightDiff = 0;
+                    topDiff = 0;
+                    bottomDiff = 0;
 
                     //check which sides intersect
                     if (ballBounds.right > blockBounds.left)
@@ -241,9 +243,13 @@ public class GameView extends View {
                     break;
                }
            }
-           for (Block b : blocksToRemove)
+           if (blocksToRemove.size() > 0)
            {
-               lstBlocks.remove(b);
+               for (Block b : blocksToRemove)
+               {
+                   lstBlocks.remove(b);
+               }
+               blocksToRemove.clear();
            }
        }
    }
@@ -319,9 +325,9 @@ public class GameView extends View {
 
 
           // Delay
-          try {
-             Thread.sleep(10);
-          } catch (InterruptedException e) { }
+          //try {
+          //   Thread.sleep(0);
+          //} catch (InterruptedException e) { }
 
             invalidate();  // Force a re-draw
        }
