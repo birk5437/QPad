@@ -28,8 +28,9 @@ import android.content.Intent;
 public class GameView extends View {
   private boolean debug = false;
    private boolean beenReset = false;
-
    private boolean gameOver = false;
+   private boolean burkeMode = true;
+
    private int paddleBottomMargin = 20;
    private int score = 0;
    private int xMin = 0;          // This view's bounds
@@ -353,8 +354,15 @@ public class GameView extends View {
    private void update() {
       // Get new (x,y) position
       detectBallCollisions();
+
       ballX += ballSpeedX;
       ballY += ballSpeedY;
+
+      if (burkeMode)
+      {
+          paddleX = ballX - (paddleLength / 2);
+          paddleY = ballY - (paddleLength / 2);
+      }
       // Detect collision and react
 
       //paddleX = ballX - 35;
@@ -413,6 +421,7 @@ public class GameView extends View {
       }
       else
       {
+          burkeMode = false;
           float deltaX, deltaY;
           //float scalingFactor = 5.0f / ((xMax > yMax) ? yMax : xMax);
           switch (event.getAction()) {
