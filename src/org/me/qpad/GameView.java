@@ -27,6 +27,7 @@ import android.content.Intent;
 
 public class GameView extends View {
   private boolean debug = false;
+   private boolean beenReset = false;
 
    private boolean gameOver = false;
    private int paddleBottomMargin = 20;
@@ -40,8 +41,8 @@ public class GameView extends View {
    private float ballY = ballRadius + 75;
    private float ballSpeedX = 2;  // Ball's speed (x,y)
    private float ballSpeedY = 2;
-   private float paddleX = 20;
-   private float paddleY = 20;
+   private float paddleX;// = 20;
+   private float paddleY;// = 20;
    //private float paddleYFixed;
    //private float paddleXFixed;
    private float paddleWidth = 5f;
@@ -92,8 +93,6 @@ public class GameView extends View {
       super(context);
       parentContext = context;
 
-      resetGame();
-
       ballBounds = new RectF();
       paddleLeft = new RectF();
       paddleRight = new RectF();
@@ -104,6 +103,8 @@ public class GameView extends View {
       this.setFocusable(true);
       this.requestFocus();
       this.setFocusableInTouchMode(true);
+
+      resetGame();
 
    }
 
@@ -159,20 +160,16 @@ public class GameView extends View {
          ballX = xMax-ballRadius;
          ballSpeedX = -ballSpeedX;
       } else if (ballX - ballRadius < xMin) {
-         //drawGame = false;
-         //drawGame = false;
-         //gameOver();
+         gameOver = true;
          ballSpeedX = -ballSpeedX;
          ballX = xMin+ballRadius;
       }
       if (ballY + ballRadius > yMax) {
-         //drawGame = false;
-         //gameOver();
+         gameOver = true;
          ballSpeedY = -ballSpeedY;
          ballY = yMax - ballRadius;
       } else if (ballY - ballRadius < yMin) {
-         //drawGame = false;
-         //gameOver();
+         gameOver = true;
          ballSpeedY = -ballSpeedY;
          ballY = yMin + ballRadius;
       }
@@ -253,14 +250,21 @@ public class GameView extends View {
 
       ballX = 40;
       ballY = 20;
+      ballSpeedX = 2;
+      ballSpeedY = 2;
+
+      paddleX = (xMax - paddleLength) / 2;
+      paddleY = (yMax - paddleLength) / 2;
 
       //int width = 0;
       //int blkX = blocksMinX;
       //int blkY = blocksMinY;
 
-      set1 = new BlockSet(70, 100, 20, 10, 2);
+      set1 = new BlockSet(70, 100, 20, 10, 1);
       lstBlocks = set1.getBlocks();
       blocksRect = set1.getBounds();
+
+      beenReset = true;
    }
 
    private void gameOver(Canvas c)
@@ -441,5 +445,13 @@ public class GameView extends View {
       // Set the movement bounds for the ball
       xMax = w-1;
       yMax = h-1;
+
+      if (beenReset)
+      {
+          paddleX = (xMax - paddleLength) / 2;
+          paddleY = (yMax - paddleLength) / 2;
+          beenReset = false;
+      }
+
    }
 }
