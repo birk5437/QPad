@@ -77,6 +77,8 @@ public class GameView extends View {
    int blockSetWidth = 0; //always leave these set to 0 - use the pixel values above
    int blockSetHeight = 0;//always leave these set to 0 - use the pixel values above
 
+   private BlockSet set1;
+
    private RectF blocksRect;
 
 
@@ -98,7 +100,7 @@ public class GameView extends View {
       int blkX = blocksMinX;
       int blkY = blocksMinY;
 
-      BlockSet set1 = new BlockSet(70, 100, 20, 10, 1);
+      set1 = new BlockSet(70, 100, 20, 10, 2);
       lstBlocks = set1.getBlocks();
       blocksRect = set1.getBounds();
       

@@ -52,9 +52,9 @@ public class BlockSet {
 
     public RectF getBounds()
     {
-        float minX = 0;
+        float minX = 9999.0f;
         float maxX = 0;
-        float minY = 0;
+        float minY = 9999.0f;
         float maxY = 0;
 
         for (Block a : lstBlocks)
@@ -62,7 +62,7 @@ public class BlockSet {
             if (a.getRect().left < minX)
                 minX = a.getRect().left;
             if (a.getRect().right > maxX)
-                maxY = a.getRect().right;
+                maxX = a.getRect().right;
             if (a.getRect().top < minY)
                 minY = a.getRect().top;
             if (a.getRect().bottom > maxY)
