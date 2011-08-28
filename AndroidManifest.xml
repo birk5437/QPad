@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-     package="org.me.qpad">
+     package="org.me.qpad"
+     android:versionCode="1"
+     android:versionName="1.0">
     <application android:icon="@drawable/qpad_icon" android:label="QPad">
          <activity android:name=".QPad" android:label="QPad">
             <intent-filter>
