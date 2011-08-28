@@ -31,6 +31,7 @@ public class GameView extends View {
    private boolean gameOver = false;
    private boolean burkeMode = false;
    private boolean touchingScreen = false;
+   private boolean isColliding = false;
 
    private int paddleBottomMargin = 20;
    private int score = 0;
@@ -118,8 +119,9 @@ public class GameView extends View {
        boolean changeX = false;
        boolean changeY = false;
        
-       if(ballBounds.intersect(paddleTop) || ballBounds.intersect(paddleBottom))
+       if((ballBounds.intersect(paddleTop) || ballBounds.intersect(paddleBottom)) && !isColliding)
        {
+           isColliding = true;
            changeX = false;
            ballSpeedY *= -1;
            if (ballSpeedX > 0 && ballX < (paddleTop.left + (paddleLength / 4.5)))
@@ -136,8 +138,9 @@ public class GameView extends View {
                ballSpeedX *= -1;
            }
        }
-       else if(ballBounds.intersect(paddleLeft) || ballBounds.intersect(paddleRight))
+       else if((ballBounds.intersect(paddleLeft) || ballBounds.intersect(paddleRight)) && !isColliding)
        {
+           isColliding = true;
            ballSpeedX *= -1;
            changeY = false;
 
@@ -157,9 +160,11 @@ public class GameView extends View {
            }
 
        }
+       else
+           isColliding = false;
 
        //detect collisions with walls
-       else if(ballX + ballRadius > xMax) {
+       if(ballX + ballRadius > xMax) {
          gameOver = true;
          //gameOver();
          ballX = xMax-ballRadius;
