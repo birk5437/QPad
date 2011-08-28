@@ -36,7 +36,7 @@ public class GraphicButton {
         upperLeftX = x;
         upperLeftY = y;
         lowerRightX = x + w;
-        lowerRightY = x + h;
+        lowerRightY = y + h;
 
         buttonColor = Color.GRAY;
         textColor = Color.BLACK;
@@ -56,13 +56,14 @@ public class GraphicButton {
         upperLeftX = x;
         upperLeftY = y;
         lowerRightX = x + w;
-        lowerRightY = x + h;
+        lowerRightY = y + h;
 
         buttonColor = Color.GRAY;
         textColor = Color.BLACK;
         label = strLabel;
 
         hTextOffset = horizTextOffset;
+        vTextOffset = vertTextOffset;
 
         paint = new Paint();
     }

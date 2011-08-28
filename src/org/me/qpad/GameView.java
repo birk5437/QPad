@@ -96,7 +96,6 @@ public class GameView extends View {
       parentContext = context;
 
       lstGbuttons = new LinkedList<GraphicButton>();
-      lstGbuttons.add(new GraphicButton(50, 50, 85, 35, "Play Again"));
 
       ballBounds = new RectF();
       paddleLeft = new RectF();
@@ -276,11 +275,13 @@ public class GameView extends View {
       // Draw the ball
       if (gameOver)
       {
+          canvas.drawText("Game Over", (xMax / 2) - 25, 20, paint);
+
           for (GraphicButton b : lstGbuttons)
           {
               b.draw(canvas);
           }
-          //canvas.drawRect(btnStart.getRect(), paint);
+          canvas.drawText("Score: " + score, 5, yMax - 5, paint);
       }
       else
       {
@@ -344,8 +345,8 @@ public class GameView extends View {
    }
 
    // Key-up event handler
-   @Override
-   public boolean onKeyUp(int keyCode, KeyEvent event) {
+   //@Override
+   /*public boolean onKeyUp(int keyCode, KeyEvent event) {
       switch (keyCode) {
          case KeyEvent.KEYCODE_DPAD_RIGHT: // Increase rightward speed
             ballSpeedX++;
@@ -377,7 +378,7 @@ public class GameView extends View {
             break;
       }
       return true;  // Event handled
-   }
+   }*/
 
    // Touch-input handler
    @Override
@@ -393,8 +394,11 @@ public class GameView extends View {
           {
               if (touchRect.intersect(b.getRect()))
               {
-                  if (b.getLabel().equals("Play Again"))
-                    resetGame();
+                      if(b.getLabel().equals("Play Again"))
+                          resetGame();
+
+                      if(b.getLabel().equals("Exit"))
+                          System.exit(0);
               }                
           }
 
@@ -436,8 +440,15 @@ public class GameView extends View {
       xMax = w-1;
       yMax = h-1;
 
+      int btnX = ((xMax / 2) / 2) - 50;
+      lstGbuttons.add(new GraphicButton(btnX, 50, 85, 55, 16, 30, "Play Again"));
+      btnX = ((xMax / 2) + ((xMax / 2) / 2)) - 50;
+      lstGbuttons.add(new GraphicButton(btnX, 50, 85, 55, 35, 30, "Exit"));
+      //lstGbuttons.add(new GraphicButton(50, 100, 85, 85, Integer.toString(btnX)));
+
       if (beenReset)
       {
+
           paddleX = (xMax - paddleLength) / 2;
           paddleY = (yMax - paddleLength) / 2;
           beenReset = false;
