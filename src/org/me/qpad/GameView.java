@@ -86,6 +86,7 @@ public class GameView extends View {
    GraphicButton btnStart;
 
    private LinkedList<Block> lstBlocks;
+   private LinkedList<GraphicButton> lstGbuttons;
 
    LinkedList<Block> blocksToRemove = new LinkedList<Block>();
 
@@ -93,6 +94,9 @@ public class GameView extends View {
    public GameView(Context context) {
       super(context);
       parentContext = context;
+
+      lstGbuttons = new LinkedList<GraphicButton>();
+      lstGbuttons.add(new GraphicButton(50, 50, 85, 35, "Play Again"));
 
       ballBounds = new RectF();
       paddleLeft = new RectF();
@@ -247,8 +251,6 @@ public class GameView extends View {
       score = 0;
       gameOver = false;
 
-      btnStart = new GraphicButton(50, 50, 40, 15);
-
       ballX = 40;
       ballY = 20;
       ballSpeedX = 2;
@@ -268,45 +270,17 @@ public class GameView extends View {
       beenReset = true;
    }
 
-   private void gameOver(Canvas c)
-   {
-       //drawGame = false;
-       //this.setEnabled(false);
-       //this.getParent().requestLayout();
-       Intent i = new Intent(parentContext, QPad.class);
-       ballX = 20;
-       ballY = 20;
-
-       ballSpeedX = 0;
-       ballSpeedY = 0;
-       //this.getParent().clearChildFocus(this.findFocus());
-       invalidate();
-       c.drawText("Game Over!", xMax / 2, yMax / 2, paint);
-       try{
-       Thread.sleep(500);
-       }
-
-       catch (Exception e) { }
-
-       //try{this.set}
-       //catch (Exception e){}
-
-       
-
-       parentContext.startActivity(i);
-       //this.setFocusable(false);
-       //this.getRootView().showContextMenu();
-       //Thread.yield();
-       //this.clearFocus();
-   }
-
    // Called back to draw the view. Also called after invalidate().
    @Override
    protected void onDraw(Canvas canvas) {
       // Draw the ball
       if (gameOver)
       {
-          canvas.drawRect(btnStart.getRect(), paint);
+          for (GraphicButton b : lstGbuttons)
+          {
+              b.draw(canvas);
+          }
+          //canvas.drawRect(btnStart.getRect(), paint);
       }
       else
       {
@@ -414,10 +388,17 @@ public class GameView extends View {
       if (gameOver)
       {
           RectF touchRect = new RectF(currentX - 1, currentY - 1, currentX + 1, currentY + 1);
-          if (touchRect.intersect(btnStart.getRect()))
+          
+          for (GraphicButton b : lstGbuttons)
           {
-              resetGame();
+              if (touchRect.intersect(b.getRect()))
+              {
+                  if (b.getLabel().equals("Play Again"))
+                    resetGame();
+              }                
           }
+
+
       }
       else
       {
