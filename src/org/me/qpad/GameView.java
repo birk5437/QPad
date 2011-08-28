@@ -29,7 +29,8 @@ public class GameView extends View {
   private boolean debug = false;
    private boolean beenReset = false;
    private boolean gameOver = false;
-   private boolean burkeMode = true;
+   private boolean burkeMode = false;
+   private boolean touchingScreen = false;
 
    private int paddleBottomMargin = 20;
    private int score = 0;
@@ -275,7 +276,7 @@ public class GameView extends View {
       // Draw the ball
       if (gameOver)
       {
-          canvas.drawText("Game Over", (xMax / 2) - 25, 20, paint);
+          canvas.drawText("Game Over", (xMax / 2) - 30, 20, paint);
 
           for (GraphicButton b : lstGbuttons)
           {
@@ -332,6 +333,18 @@ public class GameView extends View {
 
       ballX += ballSpeedX;
       ballY += ballSpeedY;
+
+      if (!touchingScreen)
+      {
+          if (paddleX < 0)
+              paddleX += 5;
+          if (paddleY < 0)
+              paddleY += 5;
+          if (paddleX > (xMax - paddleLength))
+              paddleX -= 5;
+          if (paddleY > (yMax - paddleLength)- paddleBottomMargin)
+              paddleY -= 5;
+      }
 
       if (burkeMode)
       {
@@ -419,9 +432,19 @@ public class GameView extends View {
 
 
 
+                if (paddleX >= -(paddleLength -5) && paddleX <= (xMax - 5))
+                {
+                    paddleX = paddleX + (currentX - previousX);
+                }
 
-                paddleX = paddleX + (currentX - previousX);
+                if (paddleY >= -(paddleLength - 5) && paddleY <= (yMax - 5))
                 paddleY = paddleY + (currentY - previousY);
+                break;
+              case MotionEvent.ACTION_UP:
+                  touchingScreen = false;
+                  break;
+              case MotionEvent.ACTION_DOWN:
+                  touchingScreen = true;
 
 
           }
@@ -440,6 +463,7 @@ public class GameView extends View {
       xMax = w-1;
       yMax = h-1;
 
+      lstGbuttons.clear();
       int btnX = ((xMax / 2) / 2) - 50;
       lstGbuttons.add(new GraphicButton(btnX, 50, 85, 55, 16, 30, "Play Again"));
       btnX = ((xMax / 2) + ((xMax / 2) / 2)) - 50;
