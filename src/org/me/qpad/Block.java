@@ -32,8 +32,8 @@ public class Block {
 
             xPos = x;
             yPos = y;
-            width = 8;
-            height = 8;
+            width = 12;
+            height = 12;
     }
 
     public int getWidth()

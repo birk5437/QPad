@@ -268,10 +268,6 @@ public class GameView extends View {
       //int blkX = blocksMinX;
       //int blkY = blocksMinY;
 
-      set1 = new BlockSet(70, 100, 20, 10, 1);
-      lstBlocks = set1.getBlocks();
-      blocksRect = set1.getBounds();
-
       beenReset = true;
    }
 
@@ -477,7 +473,9 @@ public class GameView extends View {
 
       if (beenReset)
       {
-
+          set1 = new BlockSet(xMax/4, 100, ((xMax - (xMax/2)) / 12), 20, 1);
+          lstBlocks = set1.getBlocks();
+          blocksRect = set1.getBounds();
           paddleX = (xMax - paddleLength) / 2;
           paddleY = (yMax - paddleLength) / 2;
           beenReset = false;

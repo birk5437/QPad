@@ -495,7 +495,7 @@ is divided into following sections:
         <delete file="${dist.apk}_"/>
     </target>
 
-    <target depends="init,-package-res-and-assets,-package-res-no-assets,-package-dex" name="-unsigned">
+    <!--<target depends="init,-package-res-and-assets,-package-res-no-assets,-package-dex" name="-unsigned">
         <exec executable="${apkbuilder}" failonerror="true">
             <arg value="${basedir}/${dist.apk}"/>
             <arg value="-u"/>
@@ -503,8 +503,8 @@ is divided into following sections:
             <arg value="${basedir}/${dist.apk}_"/>
         </exec>
         <delete file="${dist.apk}_"/>
-    </target>
-    <target depends="init,compile,-pre-jar,-dex,-package-res-and-assets,-package-res-no-assets,-package-dex,-unsigned,-post-jar" description="Build JAR." name="jar-unsigned"/>
+    </target>-->
+    <!--<target depends="init,compile,-pre-jar,-dex,-package-res-and-assets,-package-res-no-assets,-package-dex,-unsigned,-post-jar" description="Build JAR." name="jar-unsigned"/>-->
     <target depends="init,compile,-pre-jar,-dex,-package-res-and-assets,-package-res-no-assets,-package-dex,-sign,-post-jar" description="Build JAR." name="jar"/>
     <!--
                 =================
