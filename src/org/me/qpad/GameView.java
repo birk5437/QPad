@@ -261,13 +261,13 @@ public class GameView extends View {
       ballSpeedX = 2;
       ballSpeedY = 2;
 
-      paddleX = (xMax - paddleLength) / 2;
-      paddleY = (yMax - paddleLength) / 2;
+      //paddleX = (xMax - paddleLength) / 2;
+      //paddleY = (yMax - paddleLength) / 2;
 
       //int width = 0;
       //int blkX = blocksMinX;
       //int blkY = blocksMinY;
-
+      resetBlocksAndPaddles();
       beenReset = true;
    }
 
@@ -456,6 +456,15 @@ public class GameView extends View {
       return true;  // Event handled
    }
 
+   public void resetBlocksAndPaddles()
+   {
+      set1 = new BlockSet(xMax/4, (yMax / 6), ((xMax - (xMax/2)) / 12), ((yMax - (yMax / 2)) / 12), 1);
+      lstBlocks = set1.getBlocks();
+      blocksRect = set1.getBounds();
+      paddleX = (xMax - paddleLength) / 2;
+      paddleY = (yMax - paddleLength) / 2;
+      beenReset = false;
+   }
 
    // Called back when the view is first created or its size changes.
    @Override
@@ -473,12 +482,7 @@ public class GameView extends View {
 
       if (beenReset)
       {
-          set1 = new BlockSet(xMax/4, 100, ((xMax - (xMax/2)) / 12), 20, 1);
-          lstBlocks = set1.getBlocks();
-          blocksRect = set1.getBounds();
-          paddleX = (xMax - paddleLength) / 2;
-          paddleY = (yMax - paddleLength) / 2;
-          beenReset = false;
+        resetBlocksAndPaddles();
       }
 
    }
