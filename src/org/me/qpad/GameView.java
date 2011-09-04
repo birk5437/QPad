@@ -374,14 +374,25 @@ public class GameView extends View {
 
       if (!touchingScreen)
       {
-          if (paddleX < 0)
+          if (paddleX < -(paddleLength / 5))
               paddleX += 5;
-          if (paddleY < 0)
+          else if (paddleX < 0)
+              paddleX += 1;
+
+          if (paddleY < -(paddleLength / 5))
               paddleY += 5;
-          if (paddleX > (xMax - paddleLength))
+          else if (paddleY < 0)
+              paddleY += 1;
+
+          if (paddleX > ((xMax - paddleLength) + paddleLength / 5))
               paddleX -= 5;
-          if (paddleY > (yMax - paddleLength)- paddleBottomMargin)
+          else if (paddleX > (xMax - paddleLength))
+              paddleX -= 1;
+
+          if (paddleY > ((yMax - paddleLength)- paddleBottomMargin) + paddleLength / 5)
               paddleY -= 5;
+          else if (paddleY > (yMax - paddleLength)- paddleBottomMargin)
+              paddleY -= 1;
       }
 
       if (burkeMode)
