@@ -1,0 +1,5 @@
+1.01:
+FIxed block alignment.
+
+1.0:
+The first release of my first android app!

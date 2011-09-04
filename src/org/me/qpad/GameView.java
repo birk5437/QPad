@@ -33,6 +33,7 @@ public class GameView extends View {
    private boolean touchingScreen = false;
    private boolean isColliding = false;
 
+   private int lives = 3;
    private int paddleBottomMargin = 20;
    private int score = 0;
    private int xMin = 0;          // This view's bounds
@@ -114,6 +115,15 @@ public class GameView extends View {
 
    }
 
+   private void resetBall()
+   {
+     ballX = 40;
+     ballY = 20;    
+     ballSpeedX = 2;
+     ballSpeedY = 2;
+     resetPaddles();
+   }
+
    private void detectBallCollisions()
    {
        boolean changeX = false;
@@ -165,23 +175,47 @@ public class GameView extends View {
 
        //detect collisions with walls
        if(ballX + ballRadius > xMax) {
-         gameOver = true;
-         //gameOver();
-         ballX = xMax-ballRadius;
-         ballSpeedX = -ballSpeedX;
+         if(lives == 0)
+         {
+            gameOver = true;
+         }
+         else
+         {
+             lives--;
+         }
+         resetBall();
+
       } else if (ballX - ballRadius < xMin) {
-         gameOver = true;
-         ballSpeedX = -ballSpeedX;
-         ballX = xMin+ballRadius;
+         if(lives == 0)
+         {
+            gameOver = true;
+         }
+         else
+         {
+             lives--;
+         }
+         resetBall();
       }
       if (ballY + ballRadius > yMax) {
-         gameOver = true;
-         ballSpeedY = -ballSpeedY;
-         ballY = yMax - ballRadius;
+         if(lives == 0)
+         {
+            gameOver = true;
+         }
+         else
+         {
+             lives--;
+         }
+         resetBall();
       } else if (ballY - ballRadius < yMin) {
-         gameOver = true;
-         ballSpeedY = -ballSpeedY;
-         ballY = yMin + ballRadius;
+         if(lives == 0)
+         {
+            gameOver = true;
+         }
+         else
+         {
+             lives--;
+         }
+         resetBall();
       }
 
 
@@ -254,6 +288,7 @@ public class GameView extends View {
    private void resetGame()
    {
       score = 0;
+      lives = 3;
       gameOver = false;
 
       ballX = 40;
@@ -284,6 +319,7 @@ public class GameView extends View {
               b.draw(canvas);
           }
           canvas.drawText("Score: " + score, 5, yMax - 5, paint);
+          
       }
       else
       {
@@ -295,6 +331,7 @@ public class GameView extends View {
 
           paint.setColor(Color.GREEN);
           canvas.drawText("Score: " + score, 5, yMax - 5, paint);
+          canvas.drawText("Lives: " + lives, xMax - 45, yMax - 5, paint);
 
 
           paint.setColor(Color.GRAY);
@@ -454,6 +491,12 @@ public class GameView extends View {
           previousY = currentY;
       }
       return true;  // Event handled
+   }
+
+   public void resetPaddles()
+   {
+      paddleX = (xMax - paddleLength) / 2;
+      paddleY = (yMax - paddleLength) / 2;
    }
 
    public void resetBlocksAndPaddles()
