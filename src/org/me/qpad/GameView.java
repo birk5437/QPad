@@ -537,6 +537,7 @@ public class GameView extends View {
       if (beenReset)
       {
         resetBlocksAndPaddles();
+        beenReset = false;
       }
 
    }
