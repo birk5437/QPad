@@ -24,11 +24,15 @@ import android.os.Bundle;
 import java.util.LinkedList;
 import java.lang.Math;
 import android.content.Intent;
+import android.app.Activity;
+import 	android.app.AlertDialog;
+import 	android.view.LayoutInflater;
+import android.widget.TextView;
 
 public class GameView extends View {
   private boolean debug = false;
    private boolean beenReset = false;
-   private boolean gameOver = false;
+   public boolean gameOver = false;
    private boolean burkeMode = false;
    private boolean touchingScreen = false;
    private boolean isColliding = false;
@@ -66,7 +70,8 @@ public class GameView extends View {
    private Double altitude = 0.0;
    private float speed = 0.0f;
    private String exStr = " ";
-   Context parentContext;
+   Activity parentContext;
+   Context myContext;
 
    float horizDiff = 0;
    float vertDiff = 0;
@@ -96,7 +101,9 @@ public class GameView extends View {
    // Constructor
    public GameView(Context context) {
       super(context);
-      parentContext = context;
+      //parentContext = context;
+      parentContext = (Activity)context;
+      myContext = this.getContext();
 
       lstGbuttons = new LinkedList<GraphicButton>();
 
@@ -312,14 +319,25 @@ public class GameView extends View {
       // Draw the ball
       if (gameOver)
       {
-          canvas.drawText("Game Over", (xMax / 2) - 30, 20, paint);
-
-          for (GraphicButton b : lstGbuttons)
-          {
-              b.draw(canvas);
-          }
-          canvas.drawText("Score: " + score, 5, yMax - 5, paint);
-          
+          //parentContext.finish();
+           AlertDialog.Builder builder = new AlertDialog.Builder(parentContext);
+           builder.setTitle(parentContext.getText(R.string.finished_title));
+           LayoutInflater inflater = parentContext.getLayoutInflater();
+           View view = inflater.inflate(R.layout.finish, null);
+           TextView t = (TextView)view.findViewById(R.id.txtGameOver);
+           t.setText((String)parentContext.getText(R.string.finished_text) + score);
+           builder.setView(view);
+           View closeButton =view.findViewById(R.id.closeGame);
+           closeButton.setOnClickListener(new OnClickListener() {
+               @Override
+               public void onClick(View clicked) {
+                   if(clicked.getId() == R.id.closeGame) {
+                       parentContext.finish();
+                   }
+               }
+           });
+           AlertDialog finishDialog = builder.create();
+           finishDialog.show();
       }
       else
       {
@@ -358,8 +376,9 @@ public class GameView extends View {
           //} catch (InterruptedException e) { }
 
             //invalidate();  // Force a re-draw
+          invalidate();
        }
-      invalidate();
+      
 
    }
 

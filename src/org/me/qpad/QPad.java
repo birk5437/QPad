@@ -41,12 +41,12 @@ public class QPad extends Activity {
     }
 
     private void findAllViewsById() {
-        btnStart = (Button) findViewById(R.id.btnStart);
+        //btnStart = (Button) findViewById(R.id.btnStart);
         //btnExit = (Button) findViewById(R.id.btnExit);
-        g = (GameView) this.findViewById(R.id.gameView);}
+        //g = (GameView) this.findViewById(R.id.gameView);}
 
-    public void longToast(CharSequence message) {
-    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    //public void longToast(CharSequence message) {
+    //Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 }
 
     private OnClickListener btnStartListener = new OnClickListener() {

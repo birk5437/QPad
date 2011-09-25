@@ -1,20 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">" 
-    <TextView android:id="@+id/txtTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/title"
-        android:textColor="#00FF00"/>
-
-    <Button android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtTitle"
-        android:layout_alignParentLeft="true"
-        android:text="Start"/>
-
-    <View android:id="@+id/gameView" />
-        
-</RelativeLayout>
+    android:layout_height="fill_parent"
+    android:gravity="center_vertical">
+    <Button android:id="@+id/bNew"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5px"
+            android:text="@string/newgame" />
+    <Button android:id="@+id/bExit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5px"
+            android:text="@string/exit" />
+</LinearLayout>
