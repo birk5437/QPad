@@ -322,7 +322,7 @@ public class GameView extends View {
            LayoutInflater inflater = parentContext.getLayoutInflater();
            View view = inflater.inflate(R.layout.finish, null);
            TextView t = (TextView)view.findViewById(R.id.txtGameOver);
-           t.setText((String)parentContext.getText(R.string.finished_text) + score);
+           t.setText((String)parentContext.getText(R.string.finished_text) + " " + score);
            builder.setView(view);
            View closeButton =view.findViewById(R.id.closeGame);
            closeButton.setOnClickListener(new OnClickListener() {
