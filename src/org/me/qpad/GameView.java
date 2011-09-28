@@ -91,10 +91,8 @@ public class GameView extends View {
 
    private RectF blocksRect;
 
-   GraphicButton btnStart;
 
    private LinkedList<Block> lstBlocks;
-   private LinkedList<GraphicButton> lstGbuttons;
 
    LinkedList<Block> blocksToRemove = new LinkedList<Block>();
 
@@ -105,7 +103,6 @@ public class GameView extends View {
       parentContext = (Activity)context;
       myContext = this.getContext();
 
-      lstGbuttons = new LinkedList<GraphicButton>();
 
       ballBounds = new RectF();
       paddleLeft = new RectF();
@@ -467,59 +464,38 @@ public class GameView extends View {
       float currentX = event.getX();
       float currentY = event.getY();
 
-      if (gameOver)
-      {
-          RectF touchRect = new RectF(currentX - 1, currentY - 1, currentX + 1, currentY + 1);
-          
-          for (GraphicButton b : lstGbuttons)
-          {
-              if (touchRect.intersect(b.getRect()))
-              {
-                      if(b.getLabel().equals("Play Again"))
-                          resetGame();
+      //burkeMode = false;
+      float deltaX, deltaY;
+      //float scalingFactor = 5.0f / ((xMax > yMax) ? yMax : xMax);
+      switch (event.getAction()) {
+         case MotionEvent.ACTION_MOVE:
+            // Modify rotational angles according to movement
+            deltaX = currentX - previousX;
+            deltaY = currentY - previousY;
+            //ballSpeedX += deltaX * scalingFactor;
+            //ballSpeedY += deltaY * scalingFactor;
 
-                      if(b.getLabel().equals("Exit"))
-                          System.exit(0);
-              }                
-          }
+
+
+            if (paddleX >= -(paddleLength -5) && paddleX <= (xMax - 5))
+            {
+                paddleX = paddleX + (currentX - previousX);
+            }
+
+            if (paddleY >= -(paddleLength - 5) && paddleY <= (yMax - 5))
+            paddleY = paddleY + (currentY - previousY);
+            break;
+          case MotionEvent.ACTION_UP:
+              touchingScreen = false;
+              break;
+          case MotionEvent.ACTION_DOWN:
+              touchingScreen = true;
 
 
       }
-      else
-      {
-          burkeMode = false;
-          float deltaX, deltaY;
-          //float scalingFactor = 5.0f / ((xMax > yMax) ? yMax : xMax);
-          switch (event.getAction()) {
-             case MotionEvent.ACTION_MOVE:
-                // Modify rotational angles according to movement
-                deltaX = currentX - previousX;
-                deltaY = currentY - previousY;
-                //ballSpeedX += deltaX * scalingFactor;
-                //ballSpeedY += deltaY * scalingFactor;
-
-
-
-                if (paddleX >= -(paddleLength -5) && paddleX <= (xMax - 5))
-                {
-                    paddleX = paddleX + (currentX - previousX);
-                }
-
-                if (paddleY >= -(paddleLength - 5) && paddleY <= (yMax - 5))
-                paddleY = paddleY + (currentY - previousY);
-                break;
-              case MotionEvent.ACTION_UP:
-                  touchingScreen = false;
-                  break;
-              case MotionEvent.ACTION_DOWN:
-                  touchingScreen = true;
-
-
-          }
-          // Save current x, y
-          previousX = currentX;
-          previousY = currentY;
-      }
+      // Save current x, y
+      previousX = currentX;
+      previousY = currentY;
       return true;  // Event handled
    }
 
@@ -545,13 +521,6 @@ public class GameView extends View {
       // Set the movement bounds for the ball
       xMax = w-1;
       yMax = h-1;
-
-      lstGbuttons.clear();
-      int btnX = ((xMax / 2) / 2) - 50;
-      lstGbuttons.add(new GraphicButton(btnX, 50, 85, 55, 16, 30, "Play Again"));
-      btnX = ((xMax / 2) + ((xMax / 2) / 2)) - 50;
-      lstGbuttons.add(new GraphicButton(btnX, 50, 85, 55, 35, 30, "Exit"));
-      //lstGbuttons.add(new GraphicButton(50, 100, 85, 85, Integer.toString(btnX)));
 
       if (beenReset)
       {
