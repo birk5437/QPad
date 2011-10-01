@@ -23,21 +23,27 @@ public class Menu extends Activity implements OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         Button newGame = (Button)findViewById(R.id.bNew);
+        Button highScores = (Button)findViewById(R.id.bHighScores);
         Button exit = (Button)findViewById(R.id.bExit);
         newGame.setOnClickListener(this);
         exit.setOnClickListener(this);
+        highScores.setOnClickListener(this);
     }
 
-public void onClick(View view) {
-    switch(view.getId()) {
-        case R.id.bExit:
-            finish();
-            break;
-        case R.id.bNew:
-            Intent game = new Intent(Menu.this, Game.class);
-            startActivity(game);
-            break;
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.bExit:
+                finish();
+                break;
+            case R.id.bNew:
+                Intent game = new Intent(Menu.this, Game.class);
+                startActivity(game);
+                break;
+            case R.id.bHighScores:
+                Intent highs = new Intent(Menu.this, HighScores.class);
+                startActivity(highs);
+                break;
+        }
     }
-}
 
 }
