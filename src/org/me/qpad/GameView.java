@@ -28,6 +28,8 @@ import android.app.Activity;
 import 	android.app.AlertDialog;
 import 	android.view.LayoutInflater;
 import android.widget.TextView;
+import android.content.SharedPreferences;
+
 
 public class GameView extends View {
   private boolean debug = false;
@@ -316,13 +318,24 @@ public class GameView extends View {
       // Draw the ball
       if (gameOver)
       {
+          SharedPreferences prefs = parentContext.getSharedPreferences("qpad_prefs", 0);
+
+          int high = prefs.getInt("high_score", 0);
+          if (high < score)
+          {
+            high = score;
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt("high_score", score);
+            editor.commit();
+          }
+
           //parentContext.finish();
            AlertDialog.Builder builder = new AlertDialog.Builder(parentContext);
            builder.setTitle(parentContext.getText(R.string.finished_title));
            LayoutInflater inflater = parentContext.getLayoutInflater();
            View view = inflater.inflate(R.layout.finish, null);
            TextView t = (TextView)view.findViewById(R.id.txtGameOver);
-           t.setText((String)parentContext.getText(R.string.finished_text) + " " + score);
+           t.setText((String)parentContext.getText(R.string.finished_text) + " " + score + " high: " + high);
            builder.setView(view);
            View closeButton =view.findViewById(R.id.closeGame);
            closeButton.setOnClickListener(new OnClickListener() {
@@ -422,43 +435,6 @@ public class GameView extends View {
       //paddleY = ballY - 35;
    }
 
-   // Key-up event handler
-   //@Override
-   /*public boolean onKeyUp(int keyCode, KeyEvent event) {
-      switch (keyCode) {
-         case KeyEvent.KEYCODE_DPAD_RIGHT: // Increase rightward speed
-            ballSpeedX++;
-            break;
-         case KeyEvent.KEYCODE_DPAD_LEFT:  // Increase leftward speed
-            ballSpeedX--;
-            break;
-         case KeyEvent.KEYCODE_DPAD_UP:    // Increase upward speed
-            ballSpeedY--;
-            break;
-         case KeyEvent.KEYCODE_DPAD_DOWN:  // Increase downward speed
-            ballSpeedY++;
-            break;
-         case KeyEvent.KEYCODE_DPAD_CENTER: // Stop
-            ballSpeedX = 0;
-            ballSpeedY = 0;
-            break;
-         case KeyEvent.KEYCODE_A:    // Zoom in
-            // Max radius is about 90% of half of the smaller dimension
-            float maxRadius = (xMax > yMax) ? yMax / 2 * 0.9f  : xMax / 2 * 0.9f;
-            if (ballRadius < maxRadius) {
-               ballRadius *= 1.05;   // Increase radius by 5%
-            }
-            break;
-         case KeyEvent.KEYCODE_Z:    // Zoom out
-            if (ballRadius > 20) {   // Minimum radius
-               ballRadius *= 0.95;   // Decrease radius by 5%
-            }
-            break;
-      }
-      return true;  // Event handled
-   }*/
-
-   // Touch-input handler
    @Override
    public boolean onTouchEvent(MotionEvent event) {
       float currentX = event.getX();

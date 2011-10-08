@@ -25,4 +25,5 @@ public class Game extends Activity{
         setContentView(view);
     }
 
+
 }
