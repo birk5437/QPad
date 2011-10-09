@@ -28,6 +28,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.content.SharedPreferences;
 
 
 
@@ -128,12 +129,67 @@ public void getScores()
     }
 }
 
+public void addScore()
+{
+    InputStream is;
+    String result = "";
+    //the year data to send
+    ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+    nameValuePairs.add(new BasicNameValuePair("password","qpAdp4zz"));
+    SharedPreferences prefs = getSharedPreferences("qpad_prefs", 0);
+    int scoreToAdd = prefs.getInt("high_score", 0);
+    nameValuePairs.add(new BasicNameValuePair("score",Integer.toString(scoreToAdd)));
+    nameValuePairs.add(new BasicNameValuePair("name","droid"));
+
+    //http post
+    try{
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://74.207.236.215/qpad_server/add_score.php");
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            is = entity.getContent();
+    //convert response to string
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is,"iso-8859-1"),8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+            }
+            is.close();
+
+            result=sb.toString();
+    }catch(Exception e){
+            scoreList.add(e.getMessage());
+            //Log.e("log_tag", "Error converting result "+e.toString());
+    }
+
+    //parse json data
+    try{
+            JSONArray jArray = new JSONArray(result);
+            for(int i=0;i<jArray.length();i++){
+                    JSONObject json_data = jArray.getJSONObject(i);
+                    String listString = json_data.getString("name");
+                    //scoreList.add(listString);
+                    //Log.i("log_tag","id: "+json_data.getInt("id")+
+                    //       ", name: "+json_data.getString("name")+
+                    //        ", sex: "+json_data.getInt("sex")+
+                    //        ", birthyear: "+json_data.getInt("birthyear")
+                    //);
+            }
+    }catch(JSONException e){
+        scoreList.add(e.getMessage());
+            //Log.e("log_tag", "Error parsing data "+e.toString());
+    }
+}
+
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         getScores();
+        addScore();
         setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, scoreList));
         ListView lv = getListView();
         lv.setTextFilterEnabled(true);
