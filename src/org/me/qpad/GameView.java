@@ -41,7 +41,7 @@ public class GameView extends View {
    private boolean touchingScreen = false;
    private boolean isColliding = false;
 
-   private int lives = 3;
+   private int lives = 1;
    private int paddleBottomMargin = 20;
    private int score = 0;
    private int xMin = 0;          // This view's bounds
@@ -367,7 +367,10 @@ public class GameView extends View {
 		   @Override
 		   public void onClick(View clicked) {
 		       if(clicked.getId() == R.id.submit) {
-			   parentContext.finish();
+	                   //Intent submitHigh = new Intent(parentContext, SubmitHighScore.class);
+			   //parentContext.startActivity(submitHigh);
+			   //parentContext.finish();
+			   parentContext.setContentView(R.layout.submit_high);
 		       }
 		   }
 	       });
@@ -377,8 +380,6 @@ public class GameView extends View {
 		   @Override
 		   public void onClick(View clicked) {
 		       if(clicked.getId() == R.id.main_menu) {
-	                   Intent highs = new Intent(parentContext, HighScores.class);
-			   parentContext.startActivity(highs);
 			   parentContext.finish();
 		       }
 		   }
