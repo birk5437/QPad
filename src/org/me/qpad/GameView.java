@@ -29,6 +29,8 @@ import 	android.app.AlertDialog;
 import 	android.view.LayoutInflater;
 import android.widget.TextView;
 import android.content.SharedPreferences;
+import android.content.Intent;
+import android.app.Activity;
 
 
 public class GameView extends View {
@@ -318,6 +320,7 @@ public class GameView extends View {
       // Draw the ball
       if (gameOver)
       {
+	  boolean newHigh = true;
           SharedPreferences prefs = parentContext.getSharedPreferences("qpad_prefs", 0);
 
           int high = prefs.getInt("high_score", 0);
@@ -327,28 +330,64 @@ public class GameView extends View {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt("high_score", score);
             editor.commit();
+	    newHigh = true;
           }
 
-          //parentContext.finish();
-           AlertDialog.Builder builder = new AlertDialog.Builder(parentContext);
-           builder.setTitle(parentContext.getText(R.string.finished_title));
-           LayoutInflater inflater = parentContext.getLayoutInflater();
-           View view = inflater.inflate(R.layout.finish, null);
-           TextView t = (TextView)view.findViewById(R.id.txtGameOver);
-           t.setText((String)parentContext.getText(R.string.finished_text) + " " + score + " high: " + high);
-           builder.setView(view);
-           View closeButton =view.findViewById(R.id.closeGame);
-           closeButton.setOnClickListener(new OnClickListener() {
-               @Override
-               public void onClick(View clicked) {
-                   if(clicked.getId() == R.id.closeGame) {
-                       parentContext.finish();
-                   }
-               }
-           });
-           AlertDialog finishDialog = builder.create();
-           finishDialog.show();
-      }
+	  if (newHigh == false) {
+	      //parentContext.finish();
+	       AlertDialog.Builder builder = new AlertDialog.Builder(parentContext);
+	       builder.setTitle(parentContext.getText(R.string.finished_title));
+	       LayoutInflater inflater = parentContext.getLayoutInflater();
+	       View view = inflater.inflate(R.layout.finish, null);
+	       TextView t = (TextView)view.findViewById(R.id.txtGameOver);
+	       t.setText((String)parentContext.getText(R.string.finished_text) + " " + score + " high: " + high);
+	       builder.setView(view);
+	       View submitButton =view.findViewById(R.id.closeGame);
+	       submitButton.setOnClickListener(new OnClickListener() {
+		   @Override
+		   public void onClick(View clicked) {
+		       if(clicked.getId() == R.id.closeGame) {
+			   parentContext.finish();
+		       }
+		   }
+	       });
+	       AlertDialog finishDialog = builder.create();
+	       finishDialog.show();
+	  }
+	  else if (newHigh == true) {
+	       AlertDialog.Builder builder = new AlertDialog.Builder(parentContext);
+	       builder.setTitle(parentContext.getText(R.string.finished_high_title));
+	       LayoutInflater inflater = parentContext.getLayoutInflater();
+	       View view = inflater.inflate(R.layout.finish_high, null);
+	       TextView t = (TextView)view.findViewById(R.id.txtGameOver);
+	       t.setText((String)parentContext.getText(R.string.finished_high_text) + " " + score + " high: " + high);
+	       builder.setView(view);
+	       View submitButton =view.findViewById(R.id.submit);
+	       submitButton.setOnClickListener(new OnClickListener() {
+		   @Override
+		   public void onClick(View clicked) {
+		       if(clicked.getId() == R.id.submit) {
+			   parentContext.finish();
+		       }
+		   }
+	       });
+
+	       View mainMenuButton =view.findViewById(R.id.main_menu);
+	       mainMenuButton.setOnClickListener(new OnClickListener() {
+		   @Override
+		   public void onClick(View clicked) {
+		       if(clicked.getId() == R.id.main_menu) {
+	                   Intent highs = new Intent(parentContext, HighScores.class);
+			   parentContext.startActivity(highs);
+			   parentContext.finish();
+		       }
+		   }
+	       });
+
+	       AlertDialog finishDialog = builder.create();
+	       finishDialog.show();
+	  }
+       }
       else
       {
           ballBounds.set(ballX-ballRadius, ballY-ballRadius, ballX+ballRadius, ballY+ballRadius);

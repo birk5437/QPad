@@ -8,5 +8,9 @@
     <string name="finished_title">Game Over!</string>
     <string name="finished_text">Score:</string>
     <string name="finished_button">Ok</string>
+    <string name="finished_high_button_1">Submit Score</string>
+    <string name="finished_high_button_2">Main Menu</string>
+    <string name="finished_high_title">New High Score!</string>
+    <string name="finished_high_text">Score:</string>
 
 </resources>
