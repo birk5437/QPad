@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
      package="org.me.qpad"
-     android:versionCode="4"
-     android:versionName="1.1"
+     android:versionCode="5"
+     android:versionName="1.12"
      >
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-sdk
@@ -17,6 +17,6 @@
 
         </activity>
         <activity android:name=".Game"></activity>
-        <activity android:name=".HighScores"></activity>
+        <!--<activity android:name=".HighScores"></activity>-->
     </application>
 </manifest>
