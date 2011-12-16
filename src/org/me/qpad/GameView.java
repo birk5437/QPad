@@ -333,7 +333,7 @@ public class GameView extends View {
 	    newHigh = true;
           }
 
-	  if (newHigh == false) {
+
 	      //parentContext.finish();
 	       AlertDialog.Builder builder = new AlertDialog.Builder(parentContext);
 	       builder.setTitle(parentContext.getText(R.string.finished_title));
@@ -354,41 +354,7 @@ public class GameView extends View {
 	       AlertDialog finishDialog = builder.create();
 	       finishDialog.show();
 	  }
-	  else if (newHigh == true) {
-	       AlertDialog.Builder builder = new AlertDialog.Builder(parentContext);
-	       builder.setTitle(parentContext.getText(R.string.finished_high_title));
-	       LayoutInflater inflater = parentContext.getLayoutInflater();
-	       View view = inflater.inflate(R.layout.finish_high, null);
-	       TextView t = (TextView)view.findViewById(R.id.txtGameOver);
-	       t.setText((String)parentContext.getText(R.string.finished_high_text) + " " + score + " high: " + high);
-	       builder.setView(view);
-	       View submitButton =view.findViewById(R.id.submit);
-	       submitButton.setOnClickListener(new OnClickListener() {
-		   @Override
-		   public void onClick(View clicked) {
-		       if(clicked.getId() == R.id.submit) {
-	                   //Intent submitHigh = new Intent(parentContext, SubmitHighScore.class);
-			   //parentContext.startActivity(submitHigh);
-			   //parentContext.finish();
-			   parentContext.setContentView(R.layout.submit_high);
-		       }
-		   }
-	       });
-
-	       View mainMenuButton =view.findViewById(R.id.main_menu);
-	       mainMenuButton.setOnClickListener(new OnClickListener() {
-		   @Override
-		   public void onClick(View clicked) {
-		       if(clicked.getId() == R.id.main_menu) {
-			   parentContext.finish();
-		       }
-		   }
-	       });
-
-	       AlertDialog finishDialog = builder.create();
-	       finishDialog.show();
-	  }
-       }
+      
       else
       {
           ballBounds.set(ballX-ballRadius, ballY-ballRadius, ballX+ballRadius, ballY+ballRadius);

@@ -9,11 +9,11 @@
             android:layout_height="wrap_content"
             android:padding="5px"
             android:text="@string/newgame" />
-    <Button android:id="@+id/bHighScores"
+    <!--<Button android:id="@+id/bHighScores"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="5px"
-            android:text="@string/high_scores" />
+            android:text="@string/high_scores" />-->
     <Button android:id="@+id/bExit"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
