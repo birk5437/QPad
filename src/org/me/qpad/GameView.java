@@ -37,7 +37,7 @@ public class GameView extends View {
   private boolean debug = false;
    private boolean beenReset = false;
    public boolean gameOver = false;
-   private boolean burkeMode = false;
+   private boolean burkeMode = true;
    private boolean touchingScreen = false;
    private boolean isColliding = false;
 
@@ -329,9 +329,18 @@ public class GameView extends View {
             high = score;
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt("high_score", score);
-            editor.commit();
+	    editor.commit();
 	    newHigh = true;
           }
+
+	  if (newHigh) {
+	      //parentContext.setContentView(R.layout.submit_high);
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putInt("new_high", 1);
+            editor.commit();
+	    parentContext.finish();
+	  }
+	  else {
 
 
 	      //parentContext.finish();
@@ -354,6 +363,7 @@ public class GameView extends View {
 	       AlertDialog finishDialog = builder.create();
 	       finishDialog.show();
 	  }
+      }
       
       else
       {

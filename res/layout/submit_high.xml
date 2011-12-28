@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_vertical">
+    android:layout_height="fill_parent">
     <EditText
-    android:id="@+id/txtEntry"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"/>
-</LinearLayout>
+	android:id="@+id/txtEntry"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"/>
+
+    <TextView android:text=""
+            android:id = "@+id/txtPlaceHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+	    android:layout_centerVertical="true"
+	    android:layout_centerHorizontal="true"/>
+
+    <Button android:id="@+id/bSubmit"
+            android:text="Submit Score"
+	    android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:gravity="center"
+	    android:layout_toLeftOf="@+id/txtPlaceHolder"
+	    android:padding="15dp"
+	    android:layout_centerVertical="true"
+	    android:layout_centerHorizontal="true"/>
+	    
+
+
+    <Button android:id="@+id/bSkip"
+            android:text=" Skip "
+	    android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:gravity="center"
+	    android:layout_toRightOf="@+id/txtPlaceHolder"
+	    android:padding="15dp"
+	    android:layout_centerVertical="true"
+	    android:layout_centerHorizontal="true"/>
+	    
+</RelativeLayout>
