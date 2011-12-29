@@ -25,11 +25,15 @@ public class Menu extends Activity implements OnClickListener{
 	//initPrefs();
         setContentView(R.layout.main);
         Button newGame = (Button)findViewById(R.id.bNew);
-        //Button highScores = (Button)findViewById(R.id.bHighScores); //uncomment in main.xml
-        Button exit = (Button)findViewById(R.id.bExit);
-        newGame.setOnClickListener(this);
+	newGame.setOnClickListener(this);
+
+	Button highScores = (Button)findViewById(R.id.bHighScores); //uncomment in main.xml
+        highScores.setOnClickListener(this);
+
+	Button exit = (Button)findViewById(R.id.bExit);
+        
         exit.setOnClickListener(this);
-        //highScores.setOnClickListener(this);
+        
     }
 
     public void initPrefs() {
@@ -53,10 +57,10 @@ public class Menu extends Activity implements OnClickListener{
                 Intent game = new Intent(Menu.this, Game.class);
                 startActivity(game);
                 break;
-            /*case R.id.bHighScores:
+            case R.id.bHighScores:
                 Intent highs = new Intent(Menu.this, HighScores.class);
                 startActivity(highs);
-                break;*/
+                break;
         }
     }
 

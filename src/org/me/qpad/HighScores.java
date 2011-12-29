@@ -130,7 +130,7 @@ public void addScore()
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         getScores();
-        addScore();
+        //addScore();
         setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, scoreList));
         ListView lv = getListView();
         lv.setTextFilterEnabled(true);
@@ -140,10 +140,10 @@ public void addScore()
         //setContentView(view);
     }
 
-    @Override
-    public void onPause() {
-        finish();
-        super.onPause();
-    }
+    //@Override
+    //public void onPause() {
+    //    finish();
+    //    super.onPause();
+    //}
 
 }

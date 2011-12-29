@@ -18,6 +18,6 @@
         </activity>
         <activity android:name=".Game"></activity>
 	<activity android:name=".SubmitHighScore"></activity>
-        <!--<activity android:name=".HighScores"></activity>-->
+        <activity android:name=".HighScores"></activity>
     </application>
 </manifest>
