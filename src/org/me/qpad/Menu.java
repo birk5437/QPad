@@ -49,9 +49,9 @@ public class Menu extends Activity implements OnClickListener{
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.bExit:
-                //finish();
-		Intent subHigh = new Intent(Menu.this, SubmitHighScore.class);
-		startActivity(subHigh);
+                finish();
+		//Intent subHigh = new Intent(Menu.this, SubmitHighScore.class);
+		//startActivity(subHigh);
                 break;
             case R.id.bNew:
                 Intent game = new Intent(Menu.this, Game.class);

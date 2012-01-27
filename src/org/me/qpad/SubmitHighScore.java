@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.view.View.OnClickListener;
 import android.view.View;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 
 /**
  *
@@ -49,7 +50,9 @@ public class SubmitHighScore extends Activity implements OnClickListener {
                 finish();
                 break;
             case R.id.bSubmit:
-		QPadServer s = new QPadServer("http://74.207.236.215/qpad_server");
+                QPadDataManager d = new QPadDataManager(this.getApplicationContext());
+		QPadServer s = new QPadServer("http://74.207.236.215/qpad_server", d.getUniqueId());
+                
 		SharedPreferences prefs = getSharedPreferences("qpad_prefs", 0);
 		int high = prefs.getInt("high_score", 0);
 

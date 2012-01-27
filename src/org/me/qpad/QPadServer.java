@@ -24,6 +24,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.content.SharedPreferences;
+import android.provider.Settings;
+import java.lang.reflect.Method;
+import android.content.Context;
+import android.content.ContentResolver;
+import android.app.Activity;
 
 /**
  *
@@ -32,8 +37,14 @@ import android.content.SharedPreferences;
 public class QPadServer {
 
     private String serverUrl = "";
-    public QPadServer(String url)
+    private Context localContext;
+    
+    private String androidId = "test";
+    
+    public QPadServer(String url, String id)
     {
+        androidId = id;
+        
 	serverUrl = url;
     }
 
@@ -77,7 +88,7 @@ public class QPadServer {
 		JSONArray jArray = new JSONArray(result);
 		for(int i=0;i<jArray.length();i++){
 			JSONObject json_data = jArray.getJSONObject(i);
-			String listString = json_data.getString("name") + " - " + json_data.getString("score");
+			String listString = json_data.getString("name") + " - " + androidId;//json_data.getString("score");
 			scoreList.add(listString);
 			//Log.i("log_tag","id: "+json_data.getInt("id")+
 			//       ", name: "+json_data.getString("name")+
@@ -96,16 +107,19 @@ public class QPadServer {
 
     public void addScore(String strName, int scoreToAdd) throws java.io.IOException
     {
-	InputStream is;
+        
+
+        InputStream is;
 	String result = "";
 	//the year data to send
 	ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 	nameValuePairs.add(new BasicNameValuePair("password","qpAdp4zz"));
 	//SharedPreferences prefs = getSharedPreferences("qpad_prefs", 0);
 	//int scoreToAdd = prefs.getInt("high_score", 0);
-	nameValuePairs.add(new BasicNameValuePair("score",Integer.toString(scoreToAdd)));
-	nameValuePairs.add(new BasicNameValuePair("name",strName));
-
+        nameValuePairs.add(new BasicNameValuePair("score",Integer.toString(scoreToAdd)));
+	//nameValuePairs.add(new BasicNameValuePair("name", strName));
+        //nameValuePairs.add(new BasicNameValuePair("name", androidId));
+        nameValuePairs.add(new BasicNameValuePair("name", androidId));
 	//http post
 	//try{
 		HttpClient httpclient = new DefaultHttpClient();

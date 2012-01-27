@@ -15,11 +15,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-//import android.graphics.Typeface;
+import android.graphics.Typeface;
 import android.view.View;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-//import android.location.*;
 import android.os.Bundle;
 import java.util.LinkedList;
 import java.lang.Math;
@@ -29,7 +28,6 @@ import 	android.app.AlertDialog;
 import 	android.view.LayoutInflater;
 import android.widget.TextView;
 import android.content.SharedPreferences;
-import android.content.Intent;
 import android.app.Activity;
 
 
@@ -37,7 +35,7 @@ public class GameView extends View {
   private boolean debug = false;
    private boolean beenReset = false;
    public boolean gameOver = false;
-   private boolean burkeMode = true;
+   private boolean burkeMode = false;
    private boolean touchingScreen = false;
    private boolean isColliding = false;
 
