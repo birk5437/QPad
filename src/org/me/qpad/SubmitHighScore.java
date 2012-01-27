@@ -38,12 +38,6 @@ public class SubmitHighScore extends Activity implements OnClickListener {
 	btnSkip.setOnClickListener(this);
     }
 
-    /*@Override
-    public void onPause() {
-        finish();
-        super.onPause();
-    }*/
-
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.bSkip:
@@ -66,24 +60,7 @@ public class SubmitHighScore extends Activity implements OnClickListener {
 			finish();
 		    }
 		}
-		break;
-                //Intent game = new Intent(Menu.this, Game.class);
-                //startActivity(game);
-                //break;
-            //case R.id.bHighScores:
-            //    Intent highs = new Intent(Menu.this, HighScores.class);
-             //   startActivity(highs);
-             //   break;
+            break;
         }
     }
-
-    /*public void onPause() {
-        finish();
-        super.onPause();
-    }
-
-    public void onFinish() {
-	super.finish();
-    }*/
-
 }

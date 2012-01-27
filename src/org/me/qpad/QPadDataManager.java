@@ -40,12 +40,11 @@ public class QPadDataManager {
     public String getUniqueId() {
         
         String id = this.getString("unique_id", "null");
-        
+       
         if (id.equals("null")) {
             id = this.generateUniqueId();
             this.storeString("unique_id", id);
         }
-        
         return id;
     }
     
