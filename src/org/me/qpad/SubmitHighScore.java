@@ -21,7 +21,7 @@ import android.provider.Settings;
  */
 public class SubmitHighScore extends Activity implements OnClickListener {
 
-    EditText ed;
+    EditText edName;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -29,7 +29,7 @@ public class SubmitHighScore extends Activity implements OnClickListener {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         setContentView(R.layout.submit_high);
-	ed = (EditText)findViewById(R.id.txtEntry);
+	edName = (EditText)findViewById(R.id.txtEntry);
 
 	Button btnSubmit = (Button)findViewById(R.id.bSubmit);
 	btnSubmit.setOnClickListener(this);
@@ -53,7 +53,7 @@ public class SubmitHighScore extends Activity implements OnClickListener {
 		if (high > 0) {
 
 		    try{
-			s.addScore(ed.getText().toString(), high);
+			s.addScore(edName.getText().toString(), high);
 		    } catch(Exception ex) {
 
 		    } finally {
