@@ -51,8 +51,13 @@ public class GameView extends View {
    private float ballRadius = 4; // Ball's radius
    private float ballX = ballRadius + 50;  // Ball's center (x,y)
    private float ballY = ballRadius + 75;
-   private float ballSpeedX = 2;  // Ball's speed (x,y)
-   private float ballSpeedY = 2;
+   
+   private float standardBallSpeedX = 2;
+   private float standardBallSpeedY = 2;
+   
+   private float ballSpeedX;
+   private float ballSpeedY;
+   
    private float paddleX;// = 20;
    private float paddleY;// = 20;
    //private float paddleYFixed;
@@ -107,7 +112,7 @@ public class GameView extends View {
       parentContext = (Activity)context;
       myContext = this.getContext();
 
-
+      resetBallSpeed();
       ballBounds = new RectF();
       paddleLeft = new RectF();
       paddleRight = new RectF();
@@ -127,9 +132,13 @@ public class GameView extends View {
    {
      ballX = 40;
      ballY = 20;    
-     ballSpeedX = 2;
-     ballSpeedY = 2;
+     resetBallSpeed();
      resetPaddles();
+   }
+   
+   private void resetBallSpeed() { 
+      ballSpeedX = standardBallSpeedX;
+      ballSpeedY = standardBallSpeedY;
    }
 
    private void detectBallCollisions()
@@ -299,10 +308,7 @@ public class GameView extends View {
       lives = 3;
       gameOver = false;
 
-      ballX = 40;
-      ballY = 20;
-      ballSpeedX = 2;
-      ballSpeedY = 2;
+      resetBall();
 
       //paddleX = (xMax - paddleLength) / 2;
       //paddleY = (yMax - paddleLength) / 2;

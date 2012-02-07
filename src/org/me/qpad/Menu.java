@@ -20,6 +20,8 @@ import android.content.Intent;
 
 public class Menu extends Activity implements OnClickListener{
     
+    TextView txtLocalHigh;
+    
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 	//initPrefs();
@@ -34,7 +36,7 @@ public class Menu extends Activity implements OnClickListener{
         
         exit.setOnClickListener(this);
         
-        TextView txtLocalHigh = (TextView)findViewById(R.id.txtLocalHigh);
+        txtLocalHigh = (TextView)findViewById(R.id.txtLocalHigh);
         QPadDataManager d = new QPadDataManager(this.getApplicationContext());
         txtLocalHigh.append(" " + String.valueOf(d.getHighScore()));
         
@@ -84,6 +86,9 @@ public class Menu extends Activity implements OnClickListener{
 	    Intent subHigh = new Intent(Menu.this, SubmitHighScore.class);
 	    startActivity(subHigh);
           }
+          
+          QPadDataManager d = new QPadDataManager(this.getApplicationContext());
+          txtLocalHigh.setText("High Score: " + String.valueOf(d.getHighScore()));
 
 
     }
