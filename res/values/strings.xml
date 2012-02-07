@@ -12,5 +12,5 @@
     <string name="finished_high_button_2">Main Menu</string>
     <string name="finished_high_title">New High Score!</string>
     <string name="finished_high_text">Score:</string>
-
+    <string name="local_high_text">High Score:</string>
 </resources>

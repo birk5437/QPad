@@ -2,12 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+
+    <TextView android:text="New High Score!"
+            android:textSize="25dp"
+            android:id = "@+id/txtNewHigh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"/>    
+    
     <EditText
 	android:id="@+id/txtEntry"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"/>
+        android:layout_centerVertical="true"
+	android:layout_width="150dp"
+	android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"/>
 
     <TextView android:text=""
+            android:layout_below="@+id/txtEntry"
             android:id = "@+id/txtPlaceHolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -15,9 +26,10 @@
 	    android:layout_centerHorizontal="true"/>
 
     <Button android:id="@+id/bSubmit"
+            android:layout_below="@+id/txtEntry"
             android:text="Submit Score"
 	    android:layout_height="wrap_content"
-	    android:layout_width="fill_parent"
+	    android:layout_width="150dp"
 	    android:gravity="center"
 	    android:layout_toLeftOf="@+id/txtPlaceHolder"
 	    android:padding="15dp"
@@ -27,9 +39,10 @@
 
 
     <Button android:id="@+id/bSkip"
+            android:layout_below="@+id/txtEntry"
             android:text=" Skip "
 	    android:layout_height="wrap_content"
-	    android:layout_width="fill_parent"
+	    android:layout_width="150dp"
 	    android:gravity="center"
 	    android:layout_toRightOf="@+id/txtPlaceHolder"
 	    android:padding="15dp"

@@ -96,7 +96,7 @@ public class QPadServer {
 	nameValuePairs.add(new BasicNameValuePair("password","qpAdp4zz"));
         nameValuePairs.add(new BasicNameValuePair("score",Integer.toString(scoreToAdd)));
 	nameValuePairs.add(new BasicNameValuePair("name", strName));
-        nameValuePairs.add(new BasicNameValuePair("unique_id", androidId));
+        nameValuePairs.add(new BasicNameValuePair("install_id", androidId));
 
         //http post
         HttpClient httpclient = new DefaultHttpClient();

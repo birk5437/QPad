@@ -17,6 +17,10 @@ public class QPadDataManager {
         myContext = c;
     }
     
+    public int getHighScore() {
+        return getInt("high_score", 0);
+    }
+    
     public void storeString(String valueName, String value) {
         
 	SharedPreferences prefs = myContext.getSharedPreferences("qpad_prefs", 0);
@@ -28,9 +32,19 @@ public class QPadDataManager {
     
     public String getString(String valueName, String defaultValue)  {
 
-        SharedPreferences prefs = myContext.getSharedPreferences("qpad_prefs", 0);
-        return prefs.getString(valueName, defaultValue);
+        return getPrefs().getString(valueName, defaultValue);
         
+    }
+    
+    public void storeInt(String valueName, int value) {
+	SharedPreferences prefs = myContext.getSharedPreferences("qpad_prefs", 0);
+	SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(valueName, value);
+        editor.commit();
+    }
+    
+    public int getInt(String valueName, int defaultValue) {
+        return getPrefs().getInt(valueName, defaultValue);
     }
     
     private String generateUniqueId() {
@@ -50,6 +64,10 @@ public class QPadDataManager {
     
     public String getAndroidId() {
         return Settings.Secure.getString(myContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+    
+    private SharedPreferences getPrefs() {
+        return myContext.getSharedPreferences("qpad_prefs", 0);
     }
     
 }

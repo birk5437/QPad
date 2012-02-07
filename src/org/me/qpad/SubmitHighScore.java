@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.EditText;
 import android.view.View.OnClickListener;
 import android.view.View;
@@ -29,6 +30,9 @@ public class SubmitHighScore extends Activity implements OnClickListener {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         setContentView(R.layout.submit_high);
+        
+        TextView txtNewHigh = (TextView)findViewById(R.id.txtNewHigh);
+        
 	edName = (EditText)findViewById(R.id.txtEntry);
 
 	Button btnSubmit = (Button)findViewById(R.id.bSubmit);

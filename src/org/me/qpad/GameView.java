@@ -32,10 +32,12 @@ import android.app.Activity;
 
 
 public class GameView extends View {
-  private boolean debug = false;
+
+   private boolean burkeMode = false;
+   private boolean resetHigh = false;
+   private boolean debug = false;
    private boolean beenReset = false;
    public boolean gameOver = false;
-   private boolean burkeMode = false;
    private boolean touchingScreen = false;
    private boolean isColliding = false;
 
@@ -318,7 +320,11 @@ public class GameView extends View {
       // Draw the ball
       if (gameOver)
       {
-	  boolean newHigh = true;
+          if(resetHigh) {
+              QPadDataManager d = new QPadDataManager(myContext);
+              d.storeInt("high_score", 0);
+          }
+	  boolean newHigh = false;
           SharedPreferences prefs = parentContext.getSharedPreferences("qpad_prefs", 0);
 
           int high = prefs.getInt("high_score", 0);
@@ -339,8 +345,6 @@ public class GameView extends View {
 	    parentContext.finish();
 	  }
 	  else {
-
-
 	      //parentContext.finish();
 	       AlertDialog.Builder builder = new AlertDialog.Builder(parentContext);
 	       builder.setTitle(parentContext.getText(R.string.finished_title));

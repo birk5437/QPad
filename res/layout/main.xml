@@ -18,5 +18,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="5px"
-            android:text="@string/exit" />
+            android:text="@string/exit" />"
+    <TextView android:text="@string/local_high_text"
+              android:id = "@+id/txtLocalHigh"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:gravity="bottom"
+              android:paddingLeft="10px" />         
 </LinearLayout>

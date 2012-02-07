@@ -34,6 +34,10 @@ public class Menu extends Activity implements OnClickListener{
         
         exit.setOnClickListener(this);
         
+        TextView txtLocalHigh = (TextView)findViewById(R.id.txtLocalHigh);
+        QPadDataManager d = new QPadDataManager(this.getApplicationContext());
+        txtLocalHigh.append(" " + String.valueOf(d.getHighScore()));
+        
     }
 
     public void initPrefs() {

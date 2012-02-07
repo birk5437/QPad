@@ -1,0 +1,4 @@
+add local high score display to menu
+change keyboard type on submit high score screen
+add "new high score!" label on submit screen
+add check before going to submit screen
