@@ -12,10 +12,14 @@
     
     <EditText
 	android:id="@+id/txtEntry"
-        android:layout_centerVertical="true"
-	android:layout_width="150dp"
+        android:layout_centerVertical="false"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/txtNewHigh"
+        android:hint="Enter your name"
+	android:layout_width="300dp"
+        android:inputType="textPersonName"
 	android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"/>
+        />
 
     <TextView android:text=""
             android:layout_below="@+id/txtEntry"

@@ -11,6 +11,7 @@ package org.me.qpad;
  */
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.widget.*;
 import android.view.View.OnClickListener;
@@ -21,6 +22,7 @@ import android.content.Intent;
 public class Menu extends Activity implements OnClickListener{
     
     TextView txtLocalHigh;
+    ProgressDialog loadingDialog;
     
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,7 @@ public class Menu extends Activity implements OnClickListener{
         txtLocalHigh = (TextView)findViewById(R.id.txtLocalHigh);
         QPadDataManager d = new QPadDataManager(this.getApplicationContext());
         txtLocalHigh.append(" " + String.valueOf(d.getHighScore()));
+        loadingDialog = new ProgressDialog(Menu.this);
         
     }
 
@@ -64,6 +67,7 @@ public class Menu extends Activity implements OnClickListener{
                 startActivity(game);
                 break;
             case R.id.bHighScores:
+                loadingDialog = ProgressDialog.show(Menu.this, "", "Loading", true);
                 Intent highs = new Intent(Menu.this, HighScores.class);
                 startActivity(highs);
                 break;
@@ -74,6 +78,8 @@ public class Menu extends Activity implements OnClickListener{
     public void onResume() {
 
 	  super.onResume();
+          if (loadingDialog.isShowing())
+            loadingDialog.dismiss();
 
           SharedPreferences prefs = getSharedPreferences("qpad_prefs", 0);
 

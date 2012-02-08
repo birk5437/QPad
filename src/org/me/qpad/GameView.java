@@ -34,7 +34,7 @@ import android.app.Activity;
 public class GameView extends View {
 
    private boolean burkeMode = false;
-   private boolean resetHigh = false;
+   private boolean resetHigh = true;
    private boolean debug = false;
    private boolean beenReset = false;
    public boolean gameOver = false;

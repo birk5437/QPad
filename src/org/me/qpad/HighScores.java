@@ -11,6 +11,7 @@ package org.me.qpad;
  */
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.content.Intent;
 import android.widget.ListView;
@@ -37,6 +38,7 @@ public class HighScores extends ListActivity {
 
 public void getScores()
 {
+    //ProgressDialog loadingDialog = ProgressDialog.show(HighScores.this, "", "Loading", true);
     InputStream is;
     String result = "";
     //the year data to send

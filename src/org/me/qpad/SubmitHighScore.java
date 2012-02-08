@@ -15,6 +15,8 @@ import android.view.View.OnClickListener;
 import android.view.View;
 import android.content.SharedPreferences;
 import android.provider.Settings;
+import android.app.ProgressDialog;
+import android.os.Handler;
 
 /**
  *
@@ -48,22 +50,36 @@ public class SubmitHighScore extends Activity implements OnClickListener {
                 finish();
                 break;
             case R.id.bSubmit:
-                QPadDataManager d = new QPadDataManager(this.getApplicationContext());
-		QPadServer s = new QPadServer("http://74.207.236.215/qpad_server", d.getUniqueId());
                 
-		SharedPreferences prefs = getSharedPreferences("qpad_prefs", 0);
-		int high = prefs.getInt("high_score", 0);
+                
+                Handler handler = new Handler();
+                long delay = 0;
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ProgressDialog submittingDialog = ProgressDialog.show(SubmitHighScore.this, "", "Submitting Score", true);
+                        submittingDialog.show();
 
-		if (high > 0) {
+                        QPadDataManager d = new QPadDataManager(SubmitHighScore.this.getApplicationContext());
 
-		    try{
-			s.addScore(edName.getText().toString(), high);
-		    } catch(Exception ex) {
+                        QPadServer s = new QPadServer("http://74.207.236.215/qpad_server", d.getUniqueId());
 
-		    } finally {
-			finish();
-		    }
-		}
+                        SharedPreferences prefs = getSharedPreferences("qpad_prefs", 0);
+                        int high = prefs.getInt("high_score", 0);
+
+                        if (high > 0) {
+
+                            try{
+                                s.addScore(edName.getText().toString(), high);
+                            } catch(Exception ex) {
+
+                            }
+                        }
+                        submittingDialog.dismiss();
+                    }
+                }, delay);
+                
+                
             break;
         }
     }
