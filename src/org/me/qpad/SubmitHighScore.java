@@ -25,6 +25,7 @@ import android.os.Handler;
 public class SubmitHighScore extends Activity implements OnClickListener {
 
     EditText edName;
+    ProgressDialog submittingDialog;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -32,6 +33,8 @@ public class SubmitHighScore extends Activity implements OnClickListener {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         setContentView(R.layout.submit_high);
+        submittingDialog = new ProgressDialog(SubmitHighScore.this);
+        submittingDialog.setMessage("Submitting Score");
         
         TextView txtNewHigh = (TextView)findViewById(R.id.txtNewHigh);
         
@@ -51,15 +54,14 @@ public class SubmitHighScore extends Activity implements OnClickListener {
                 break;
             case R.id.bSubmit:
                 
-                
+                submittingDialog.show();
                 Handler handler = new Handler();
-                long delay = 0;
+                long delay = 1000;
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        ProgressDialog submittingDialog = ProgressDialog.show(SubmitHighScore.this, "", "Submitting Score", true);
-                        submittingDialog.show();
-
+                        //submittingDialog = ProgressDialog.show(SubmitHighScore.this, "", "Submitting Score", true);
+                        
                         QPadDataManager d = new QPadDataManager(SubmitHighScore.this.getApplicationContext());
 
                         QPadServer s = new QPadServer("http://74.207.236.215/qpad_server", d.getUniqueId());
@@ -76,9 +78,9 @@ public class SubmitHighScore extends Activity implements OnClickListener {
                             }
                         }
                         submittingDialog.dismiss();
+                        finish();
                     }
                 }, delay);
-                
                 
             break;
         }
