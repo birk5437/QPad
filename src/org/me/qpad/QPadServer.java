@@ -29,6 +29,9 @@ import java.lang.reflect.Method;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.app.Activity;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 /**
  *
@@ -45,6 +48,18 @@ public class QPadServer {
         androidId = id;
 	serverUrl = url;
     }
+    
+    private HttpParams setTimeout(int connection, int socket) {
+        
+        HttpParams httpParameters = new BasicHttpParams();
+        int connectionTimeout = connection;
+        int socketTimeout = socket;
+        HttpConnectionParams.setConnectionTimeout(httpParameters, connectionTimeout);
+        HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
+        
+        return httpParameters;
+    
+    }
 
     public ArrayList<String> getHighScores() throws java.io.IOException, org.json.JSONException {
 
@@ -57,7 +72,7 @@ public class QPadServer {
 	nameValuePairs.add(new BasicNameValuePair("password","qpAdp4zz"));
 
 	//http post
-        HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpclient = new DefaultHttpClient(setTimeout(5000, 7000));
         String httpUrl = serverUrl + "/get_high_scores.php";
         HttpPost httppost = new HttpPost(httpUrl);
         httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));

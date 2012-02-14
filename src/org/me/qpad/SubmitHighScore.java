@@ -16,7 +16,9 @@ import android.view.View;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Handler;
+import android.widget.Toast;
 
 /**
  *
@@ -26,6 +28,7 @@ public class SubmitHighScore extends Activity implements OnClickListener {
 
     EditText edName;
     ProgressDialog submittingDialog;
+    Context c;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -54,6 +57,7 @@ public class SubmitHighScore extends Activity implements OnClickListener {
                 break;
             case R.id.bSubmit:
                 
+                c = this.getApplicationContext();
                 submittingDialog.show();
                 Handler handler = new Handler();
                 long delay = 1000;
@@ -73,12 +77,18 @@ public class SubmitHighScore extends Activity implements OnClickListener {
 
                             try{
                                 s.addScore(edName.getText().toString(), high);
+                                submittingDialog.dismiss();
+                                Toast.makeText(c, "Score Submitted", Toast.LENGTH_SHORT).show();
+                                finish();
                             } catch(Exception ex) {
-
+                                submittingDialog.dismiss();
+                                Toast.makeText(c, "Connection Error", Toast.LENGTH_SHORT).show();
                             }
                         }
-                        submittingDialog.dismiss();
-                        finish();
+                        else {
+                            submittingDialog.dismiss();
+                            finish();
+                        }
                     }
                 }, delay);
                 

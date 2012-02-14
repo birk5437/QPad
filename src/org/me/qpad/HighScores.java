@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.widget.ListView;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -30,13 +31,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.content.SharedPreferences;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 
 
 public class HighScores extends ListActivity {
     ArrayList<String> scoreList = new ArrayList<String>();
 
-public void getScores()
+public boolean getScores()
 {
     //ProgressDialog loadingDialog = ProgressDialog.show(HighScores.this, "", "Loading", true);
     InputStream is;
@@ -47,7 +51,13 @@ public void getScores()
 
     //http post
     try{
-            HttpClient httpclient = new DefaultHttpClient();
+            HttpParams httpParameters = new BasicHttpParams();
+            int connectionTimeout = 3000;
+            int socketTimeout = 5000;
+            HttpConnectionParams.setConnectionTimeout(httpParameters, connectionTimeout);
+            HttpConnectionParams.setSoTimeout(httpParameters, socketTimeout);
+            
+            HttpClient httpclient = new DefaultHttpClient(httpParameters);
             HttpPost httppost = new HttpPost("http://74.207.236.215/qpad_server/get_high_scores.php");
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = httpclient.execute(httppost);
@@ -64,7 +74,10 @@ public void getScores()
 
             result=sb.toString();
     }catch(Exception e){
+            QPadDataManager d = new QPadDataManager(this.getApplicationContext());
+            d.storeString("toast_message", "Connection Error");        
             scoreList.add(e.getMessage());
+            return false;
             //Log.e("log_tag", "Error converting result "+e.toString());
     }
 
@@ -82,9 +95,13 @@ public void getScores()
                     //);
             }
     }catch(JSONException e){
+        QPadDataManager d = new QPadDataManager(this.getApplicationContext());
+        d.storeString("toast_message", "Connection Error");
         scoreList.add(e.getMessage());
+        return false;
             //Log.e("log_tag", "Error parsing data "+e.toString());
     }
+    return true;
 }
 
 public void addScore()
@@ -131,11 +148,18 @@ public void addScore()
         super.onCreate(bundle);
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        getScores();
+        if (getScores()) {
+            setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, scoreList));
+            ListView lv = getListView();
+            lv.setTextFilterEnabled(true);
+        }
+        else {
+            Toast.makeText(this.getApplicationContext(), "Connection Error", Toast.LENGTH_SHORT).show();
+            finish();
+            //Todo: make toast notification
+        }
         //addScore();
-        setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, scoreList));
-        ListView lv = getListView();
-        lv.setTextFilterEnabled(true);
+
         //finish();
         //Maze maze = (Maze)extras.get("maze");
         //GameView view = new GameView(this);
