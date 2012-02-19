@@ -72,7 +72,7 @@ public class QPadServer {
 	nameValuePairs.add(new BasicNameValuePair("password","qpAdp4zz"));
 
 	//http post
-        HttpClient httpclient = new DefaultHttpClient(setTimeout(5000, 7000));
+        HttpClient httpclient = new DefaultHttpClient(setTimeout(10000, 10500));
         String httpUrl = serverUrl + "/get_high_scores.php";
         HttpPost httppost = new HttpPost(httpUrl);
         httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -95,7 +95,7 @@ public class QPadServer {
         JSONArray jArray = new JSONArray(result);
         for(int i=0;i<jArray.length();i++){
                 JSONObject json_data = jArray.getJSONObject(i);
-                String listString = json_data.getString("name") + " - " + androidId;//json_data.getString("score");
+                String listString = json_data.getString("name") + " - " + json_data.getString("score");
                 scoreList.add(listString);
         }
                 
@@ -114,7 +114,7 @@ public class QPadServer {
         nameValuePairs.add(new BasicNameValuePair("install_id", androidId));
 
         //http post
-        HttpClient httpclient = new DefaultHttpClient();
+        HttpClient httpclient = new DefaultHttpClient(setTimeout(10000, 10500));
         HttpPost httppost = new HttpPost(serverUrl + "/add_score.php");
         httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
         HttpResponse response = httpclient.execute(httppost);

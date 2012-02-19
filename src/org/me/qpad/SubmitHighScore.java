@@ -17,6 +17,7 @@ import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.widget.Toast;
 
@@ -29,6 +30,8 @@ public class SubmitHighScore extends Activity implements OnClickListener {
     EditText edName;
     ProgressDialog submittingDialog;
     Context c;
+    Toast toast;
+    protected BackgroundRequest br;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -38,6 +41,7 @@ public class SubmitHighScore extends Activity implements OnClickListener {
         setContentView(R.layout.submit_high);
         submittingDialog = new ProgressDialog(SubmitHighScore.this);
         submittingDialog.setMessage("Submitting Score");
+        toast = Toast.makeText(this, "toast", Toast.LENGTH_SHORT);
         
         TextView txtNewHigh = (TextView)findViewById(R.id.txtNewHigh);
         
@@ -56,43 +60,62 @@ public class SubmitHighScore extends Activity implements OnClickListener {
                 finish();
                 break;
             case R.id.bSubmit:
+                br = new BackgroundRequest();
+                br.execute(this);
+                break;
+        }
+    }
+
+    protected class BackgroundRequest extends AsyncTask<Context, Integer, String> {
+
+        @Override
+        protected void onPreExecute() {
+            submittingDialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Context... params){
+            QPadDataManager d = new QPadDataManager(params[0]);
+            QPadServer s = new QPadServer("http://74.207.236.215/qpad_server", d.getUniqueId());
+
+            int high = d.getInt("high_score", -1);
+
+            if (high > -1) {
                 
-                c = this.getApplicationContext();
-                submittingDialog.show();
-                Handler handler = new Handler();
-                long delay = 1000;
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //submittingDialog = ProgressDialog.show(SubmitHighScore.this, "", "Submitting Score", true);
-                        
-                        QPadDataManager d = new QPadDataManager(SubmitHighScore.this.getApplicationContext());
-
-                        QPadServer s = new QPadServer("http://74.207.236.215/qpad_server", d.getUniqueId());
-
-                        SharedPreferences prefs = getSharedPreferences("qpad_prefs", 0);
-                        int high = prefs.getInt("high_score", 0);
-
-                        if (high > 0) {
-
-                            try{
-                                s.addScore(edName.getText().toString(), high);
-                                submittingDialog.dismiss();
-                                Toast.makeText(c, "Score Submitted", Toast.LENGTH_SHORT).show();
-                                finish();
-                            } catch(Exception ex) {
-                                submittingDialog.dismiss();
-                                Toast.makeText(c, "Connection Error", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        else {
-                            submittingDialog.dismiss();
-                            finish();
-                        }
+                String name = edName.getText().toString().trim();
+                if (!name.equals("")) {
+                    try{
+                        s.addScore(name, high);
+                        return "DONE";
+                    } catch(Exception ex) {
+                        return ex.getMessage();
                     }
-                }, delay);
-                
-            break;
+                }
+                else
+                    return "EMPTY";
+            }
+            else
+                return "DONE";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            submittingDialog.dismiss();
+            if (!result.equals("DONE") && !result.equals("EMPTY")) {
+                toast.setText("Error submitting score.");
+                toast.show();
+            } else {
+                if (result.equals("EMPTY")) {
+                    toast.setText("Name cannot be empty.");
+                    toast.show();
+                } else {
+                    toast.setText("Score added.");
+                    toast.show();
+                    finish();
+                }
+            }
         }
     }
 }
