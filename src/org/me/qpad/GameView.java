@@ -309,13 +309,6 @@ public class GameView extends View {
       gameOver = false;
 
       resetBall();
-
-      //paddleX = (xMax - paddleLength) / 2;
-      //paddleY = (yMax - paddleLength) / 2;
-
-      //int width = 0;
-      //int blkX = blocksMinX;
-      //int blkY = blocksMinY;
       resetBlocksAndPaddles();
       beenReset = true;
    }
@@ -463,19 +456,13 @@ public class GameView extends View {
    public boolean onTouchEvent(MotionEvent event) {
       float currentX = event.getX();
       float currentY = event.getY();
-
-      //burkeMode = false;
       float deltaX, deltaY;
-      //float scalingFactor = 5.0f / ((xMax > yMax) ? yMax : xMax);
+
       switch (event.getAction()) {
          case MotionEvent.ACTION_MOVE:
             // Modify rotational angles according to movement
             deltaX = currentX - previousX;
             deltaY = currentY - previousY;
-            //ballSpeedX += deltaX * scalingFactor;
-            //ballSpeedY += deltaY * scalingFactor;
-
-
 
             if (paddleX >= -(paddleLength -5) && paddleX <= (xMax - 5))
             {
