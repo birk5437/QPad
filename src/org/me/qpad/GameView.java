@@ -54,6 +54,7 @@ public class GameView extends View {
    
    private float standardBallSpeedX = 2;
    private float standardBallSpeedY = 2;
+   private float ballSpeedChange = .5f;
    
    private float ballSpeedX;
    private float ballSpeedY;
@@ -62,10 +63,12 @@ public class GameView extends View {
    private float paddleY;// = 20;
    //private float paddleYFixed;
    //private float paddleXFixed;
-   private float paddleWidth = 5f;
+   private float paddleWidth = 5f; //default 5
    private float paddleLength = 100f;
+   private float paddleReboundBuffer = 3.0f;  //(paddleLength/pRB) == size of the area on each end of the paddle that will make the ball bounce back in the opposite direction.  Must be >= 2
+   private float fasterBallBuffer = 3.5f;
    private RectF ballBounds;      // Needed for Canvas.drawOval
-   private Paint paint;           // The paint (e.g. style, color) used for drawing
+   private Paint paint;           //The paint (e.g. style, color) used for drawing
    //LocationManager locationManager;
    //LocationListener locationListener;
    private RectF paddleLeft, paddleRight, paddleBottom, paddleTop;
@@ -144,20 +147,28 @@ public class GameView extends View {
    private void detectBallCollisions()
    {
        boolean changeX = false;
+       boolean fasterX, slowerX = false;
        boolean changeY = false;
+       boolean fasterY, slowerY = false;
        
        if((ballBounds.intersect(paddleTop) || ballBounds.intersect(paddleBottom)) && !isColliding)
        {
            isColliding = true;
            changeX = false;
            ballSpeedY *= -1;
-           if (ballSpeedX > 0 && ballX < (paddleTop.left + (paddleLength / 4.5)))
+           if (ballSpeedX > 0 && ballX < (paddleTop.left + (paddleLength / paddleReboundBuffer)))
            {
                changeX = true;
+               if (ballX < (paddleTop.left + (paddleLength / fasterBallBuffer))) {
+                ballSpeedX += ballSpeedChange;
+               } else if (ballSpeedX > standardBallSpeedX) { ballSpeedX -= ballSpeedChange; }
            }
-           else if (ballSpeedX < 0 && ballX > (paddleTop.right - (paddleLength / 4.5)))
+           else if (ballSpeedX < 0 && ballX > (paddleTop.right - (paddleLength / paddleReboundBuffer)))
            {
                changeX = true;
+               if (ballX > (paddleTop.right - (paddleLength / fasterBallBuffer))) {
+                 ballSpeedX -= ballSpeedChange;
+               } else if (ballSpeedX < (standardBallSpeedX * -1)) { ballSpeedX += ballSpeedChange; }
            }
 
            if(changeX)
@@ -171,14 +182,22 @@ public class GameView extends View {
            ballSpeedX *= -1;
            changeY = false;
 
-           if (ballSpeedY > 0 && ballY < (paddleRight.top + (paddleLength / 4.5)))
+           if (ballSpeedY > 0 && ballY < (paddleRight.top + (paddleLength / paddleReboundBuffer)))
            {
                changeY = true;
+               if (ballY < (paddleRight.top + (paddleLength / fasterBallBuffer))) {
+                 ballSpeedY += ballSpeedChange;
+               } else if (ballSpeedY > standardBallSpeedY) { ballSpeedY -= ballSpeedChange; }
            }
 
-           else if (ballSpeedY < 0 && ballY > (paddleRight.bottom - (paddleLength / 4.5)))
+           else if (ballSpeedY < 0)
            {
-               changeY = true;
+               if (ballY > (paddleRight.bottom - (paddleLength / paddleReboundBuffer))) {
+                  changeY = true;
+                  if (ballY > (paddleRight.bottom - (paddleLength / fasterBallBuffer))){
+                    ballSpeedY -= ballSpeedChange;
+                  } else if(ballSpeedY < (standardBallSpeedY * -1)) { ballSpeedY += ballSpeedChange; }
+               }
            }
 
            if(changeY)
@@ -234,73 +253,75 @@ public class GameView extends View {
          }
          resetBall();
       }
-
-
-       else if(ballBounds.intersect(blocksRect)){
-
-           for (Block b : lstBlocks)
-           {
-               RectF blockBounds = b.getRect();
-               if (ballBounds.intersect(blockBounds))
-               {
-                    horizDiff = 0;
-                    vertDiff = 0;
-
-                    leftDiff = 0;
-                    rightDiff = 0;
-                    topDiff = 0;
-                    bottomDiff = 0;
-
-                    //check which sides intersect
-                    if (ballBounds.right > blockBounds.left)
-                        leftDiff = Math.abs(blockBounds.left - ballBounds.right);
-
-                    if (ballBounds.left < blockBounds.right)
-                        rightDiff = Math.abs(blockBounds.right - ballBounds.left);
-
-                    if (ballBounds.bottom > blockBounds.top)
-                        topDiff = Math.abs(blockBounds.top - ballBounds.bottom);
-
-                    if (ballBounds.top < blockBounds.bottom)
-                        bottomDiff = Math.abs(blockBounds.bottom - ballBounds.top);
-
-                    if (ballSpeedX > 0) //check ball direction for X-axis intersect
-                        horizDiff = leftDiff;
-                    else
-                        horizDiff = rightDiff;
-
-                    if (ballSpeedY > 0) //check ball direction for Y-axis intersect
-                        vertDiff = topDiff;
-                    else
-                        vertDiff = bottomDiff;
-
-                    //compare diffs
-                    if(horizDiff < vertDiff)
-                        ballSpeedX *= -1;
-                    else if (horizDiff > vertDiff)
-                        ballSpeedY *= -1;
-
-                    else if (horizDiff == vertDiff)
-                    {
-                        ballSpeedX *= -1;
-                        ballSpeedY *= -1;
-                    }
-
-                    score++;
-                    blocksToRemove.add(b);
-                    break;
-               }
-           }
-           if (blocksToRemove.size() > 0)
-           {
-               for (Block b : blocksToRemove)
-               {
-                   lstBlocks.remove(b);
-               }
-               blocksToRemove.clear();
-           }
-       }
+      else { detectBlockCollisions(); }
    }
+
+   private void detectBlockCollisions() {
+     if(ballBounds.intersect(blocksRect)){
+
+         for (Block b : lstBlocks)
+         {
+             RectF blockBounds = b.getRect();
+             if (ballBounds.intersect(blockBounds))
+             {
+                  horizDiff = 0;
+                  vertDiff = 0;
+
+                  leftDiff = 0;
+                  rightDiff = 0;
+                  topDiff = 0;
+                  bottomDiff = 0;
+
+                  //check which sides intersect
+                  if (ballBounds.right > blockBounds.left)
+                      leftDiff = Math.abs(blockBounds.left - ballBounds.right);
+
+                  if (ballBounds.left < blockBounds.right)
+                      rightDiff = Math.abs(blockBounds.right - ballBounds.left);
+
+                  if (ballBounds.bottom > blockBounds.top)
+                      topDiff = Math.abs(blockBounds.top - ballBounds.bottom);
+
+                  if (ballBounds.top < blockBounds.bottom)
+                      bottomDiff = Math.abs(blockBounds.bottom - ballBounds.top);
+
+                  if (ballSpeedX > 0) //check ball direction for X-axis intersect
+                      horizDiff = leftDiff;
+                  else
+                      horizDiff = rightDiff;
+
+                  if (ballSpeedY > 0) //check ball direction for Y-axis intersect
+                      vertDiff = topDiff;
+                  else
+                      vertDiff = bottomDiff;
+
+                  //compare diffs
+                  if(horizDiff < vertDiff)
+                      ballSpeedX *= -1;
+                  else if (horizDiff > vertDiff)
+                      ballSpeedY *= -1;
+
+                  else if (horizDiff == vertDiff)
+                  {
+                      ballSpeedX *= -1;
+                      ballSpeedY *= -1;
+                  }
+
+                  score++;
+                  blocksToRemove.add(b);
+                  break;
+             }
+         }
+         if (blocksToRemove.size() > 0)
+         {
+             for (Block b : blocksToRemove)
+             {
+                 lstBlocks.remove(b);
+             }
+             blocksToRemove.clear();
+         }
+     }
+  }
 
    private void resetGame()
    {
@@ -332,8 +353,8 @@ public class GameView extends View {
             high = score;
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt("high_score", score);
-	    editor.commit();
-	    newHigh = true;
+	          editor.commit();
+	          newHigh = true;
           }
 
 	  if (newHigh) {
