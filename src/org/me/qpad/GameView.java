@@ -54,6 +54,7 @@ public class GameView extends View {
    
    private float standardBallSpeedX = 2;
    private float standardBallSpeedY = 2;
+   private float maxBallSpeed = 4.5f;
    private float ballSpeedChange = .5f;
    
    private float ballSpeedX;
@@ -63,10 +64,11 @@ public class GameView extends View {
    private float paddleY;// = 20;
    //private float paddleYFixed;
    //private float paddleXFixed;
+   private float paddleBuffer = 35f;
    private float paddleWidth = 5f; //default 5
    private float paddleLength = 100f;
-   private float paddleReboundBuffer = 3.0f;  //(paddleLength/pRB) == size of the area on each end of the paddle that will make the ball bounce back in the opposite direction.  Must be >= 2
-   private float fasterBallBuffer = 3.5f;
+   private float paddleReboundBuffer = 2.0f;  //(paddleLength/pRB) == size of the area on each end of the paddle that will make the ball bounce back in the opposite direction.  Must be >= 2
+   private float fasterBallBuffer = 4.0f;
    private RectF ballBounds;      // Needed for Canvas.drawOval
    private Paint paint;           //The paint (e.g. style, color) used for drawing
    //LocationManager locationManager;
@@ -75,6 +77,9 @@ public class GameView extends View {
 
    private float previousX;
    private float previousY;
+   private float paddleDeltaX = 0;
+   private float paddleDeltaY = 0;
+
    private Double latitude = 0.0;
    private Double drawLat = 0.0;
    private Double longitude = 0.0;
@@ -134,14 +139,26 @@ public class GameView extends View {
    private void resetBall()
    {
      ballX = 40;
-     ballY = 20;    
+     ballY = 20;
+     ballSpeedX = 0;
+     ballSpeedY = 0;    
      resetBallSpeed();
      resetPaddles();
    }
    
    private void resetBallSpeed() { 
-      ballSpeedX = standardBallSpeedX;
-      ballSpeedY = standardBallSpeedY;
+      int multiplierX, multiplierY;
+
+      if (ballSpeedX != 0) {
+        multiplierX = (int) ((0 + ballSpeedX) / Math.abs(ballSpeedX));
+      } else { multiplierX = 1; }
+
+      if (ballSpeedY != 0) {
+        multiplierY = (int) ((0 + ballSpeedY) / Math.abs(ballSpeedY));
+      } else { multiplierY = 1; }
+
+      ballSpeedX = (standardBallSpeedX * multiplierX);
+      ballSpeedY = (standardBallSpeedY * multiplierY);
    }
 
    private void detectBallCollisions()
@@ -150,110 +167,122 @@ public class GameView extends View {
        boolean fasterX, slowerX = false;
        boolean changeY = false;
        boolean fasterY, slowerY = false;
+
+       if (Math.abs(ballSpeedX) > maxBallSpeed) {
+         ballSpeedX = maxBallSpeed * (ballSpeedX / Math.abs(ballSpeedX));
+       }
+
+       if (Math.abs(ballSpeedY) > maxBallSpeed) {
+         ballSpeedY = maxBallSpeed * (ballSpeedY / Math.abs(ballSpeedY));
+       }
        
        if((ballBounds.intersect(paddleTop) || ballBounds.intersect(paddleBottom)) && !isColliding)
        {
            isColliding = true;
            changeX = false;
            ballSpeedY *= -1;
-           if (ballSpeedX > 0 && ballX < (paddleTop.left + (paddleLength / paddleReboundBuffer)))
-           {
-               changeX = true;
-               if (ballX < (paddleTop.left + (paddleLength / fasterBallBuffer))) {
-                ballSpeedX += ballSpeedChange;
-               } else if (ballSpeedX > standardBallSpeedX) { ballSpeedX -= ballSpeedChange; }
-           }
-           else if (ballSpeedX < 0 && ballX > (paddleTop.right - (paddleLength / paddleReboundBuffer)))
-           {
-               changeX = true;
-               if (ballX > (paddleTop.right - (paddleLength / fasterBallBuffer))) {
-                 ballSpeedX -= ballSpeedChange;
-               } else if (ballSpeedX < (standardBallSpeedX * -1)) { ballSpeedX += ballSpeedChange; }
-           }
+           float paddleHitMultiplier = (ballX - (paddleTop.left + (paddleLength / paddleReboundBuffer))) / (paddleLength / paddleReboundBuffer);
+           float paddleMoveMultiplier = Math.abs(1 + (paddleDeltaX / xMax)) * 0.35f;
 
-           if(changeX)
-           {
-               ballSpeedX *= -1;
-           }
+           // if((paddleHitMultiplier >= .59 && ballSpeedX < 0) || (paddleHitMultiplier <= -.59 && ballSpeedX > 0))
+           // {
+           //     ballSpeedX *= -1;
+           //     //ballSpeedX += paddleDeltaX;
+           // }
+           //else {
+
+             paddleHitMultiplier *= 3;
+             //if (paddleDeltaX == 0) { paddleDeltaX = 1; }
+             if (ballSpeedX > 0)
+             {
+               ballSpeedX += (paddleMoveMultiplier * paddleHitMultiplier);
+             }
+             else if (ballSpeedX < 0)
+             {
+               ballSpeedX += (paddleMoveMultiplier * paddleHitMultiplier);
+             }
+           //}
        }
        else if((ballBounds.intersect(paddleLeft) || ballBounds.intersect(paddleRight)) && !isColliding)
        {
            isColliding = true;
            ballSpeedX *= -1;
            changeY = false;
+           float multiplier = (ballY - (paddleRight.top + (paddleLength / paddleReboundBuffer))) / paddleLength;
 
-           if (ballSpeedY > 0 && ballY < (paddleRight.top + (paddleLength / paddleReboundBuffer)))
+           if (ballSpeedY > 0)
            {
-               changeY = true;
-               if (ballY < (paddleRight.top + (paddleLength / fasterBallBuffer))) {
-                 ballSpeedY += ballSpeedChange;
-               } else if (ballSpeedY > standardBallSpeedY) { ballSpeedY -= ballSpeedChange; }
+               //if (ballY < (paddleRight.top + (paddleLength / paddleReboundBuffer))){
+                 ballSpeedY += (Math.abs(paddleDeltaY) * multiplier);
+               //} else { ballSpeedY += paddleDeltaY; }
            }
 
            else if (ballSpeedY < 0)
            {
-               if (ballY > (paddleRight.bottom - (paddleLength / paddleReboundBuffer))) {
-                  changeY = true;
-                  if (ballY > (paddleRight.bottom - (paddleLength / fasterBallBuffer))){
-                    ballSpeedY -= ballSpeedChange;
-                  } else if(ballSpeedY < (standardBallSpeedY * -1)) { ballSpeedY += ballSpeedChange; }
-               }
+               //if (ballY > (paddleRight.bottom - (paddleLength / paddleReboundBuffer))) {
+                 ballSpeedY += (Math.abs(paddleDeltaY) * multiplier);
+               //} else { ballSpeedY -= paddleDeltaY; }
            }
 
            if(changeY)
            {
                ballSpeedY *= -1;
+               //ballSpeedY += paddleDeltaY;
            }
 
        }
        else
            isColliding = false;
 
-       //detect collisions with walls
-       if(ballX + ballRadius > xMax) {
-         if(lives == 0)
-         {
-            gameOver = true;
-         }
-         else
-         {
-             lives--;
-         }
-         resetBall();
+       detectWallCollisions();
+       detectBlockCollisions();
+   }
 
-      } else if (ballX - ballRadius < xMin) {
-         if(lives == 0)
-         {
-            gameOver = true;
-         }
-         else
-         {
-             lives--;
-         }
-         resetBall();
-      }
-      if (ballY + ballRadius > yMax) {
-         if(lives == 0)
-         {
-            gameOver = true;
-         }
-         else
-         {
-             lives--;
-         }
-         resetBall();
-      } else if (ballY - ballRadius < yMin) {
-         if(lives == 0)
-         {
-            gameOver = true;
-         }
-         else
-         {
-             lives--;
-         }
-         resetBall();
-      }
-      else { detectBlockCollisions(); }
+   private void detectWallCollisions() {
+     //detect collisions with walls
+     if(ballX + ballRadius > xMax) {
+       if(lives == 0)
+       {
+          gameOver = true;
+       }
+       else
+       {
+           lives--;
+       }
+       resetBall();
+
+    } else if (ballX - ballRadius < xMin) {
+       if(lives == 0)
+       {
+          gameOver = true;
+       }
+       else
+       {
+           lives--;
+       }
+       resetBall();
+    }
+    if (ballY + ballRadius > yMax) {
+       if(lives == 0)
+       {
+          gameOver = true;
+       }
+       else
+       {
+           lives--;
+       }
+       resetBall();
+    } else if (ballY - ballRadius < yMin) {
+       if(lives == 0)
+       {
+          gameOver = true;
+       }
+       else
+       {
+           lives--;
+       }
+       resetBall();
+    }
    }
 
    private void detectBlockCollisions() {
@@ -326,7 +355,7 @@ public class GameView extends View {
    private void resetGame()
    {
       score = 0;
-      lives = 3;
+      lives = 100;
       gameOver = false;
 
       resetBall();
@@ -390,8 +419,8 @@ public class GameView extends View {
       else
       {
           ballBounds.set(ballX-ballRadius, ballY-ballRadius, ballX+ballRadius, ballY+ballRadius);
-          paddleLeft.set(1, paddleY, paddleWidth + 1, paddleY + paddleLength);
-          paddleRight.set(xMax - paddleWidth, paddleY, xMax, paddleY + paddleLength);
+          paddleLeft.set(1 - paddleBuffer, paddleY, paddleWidth + 1, paddleY + paddleLength);
+          paddleRight.set(xMax - paddleWidth, paddleY, xMax + paddleBuffer, paddleY + paddleLength);
           paddleTop.set(paddleX, 1, paddleX + paddleLength, paddleWidth + 1);
           paddleBottom.set(paddleX, yMax - paddleWidth - paddleBottomMargin, paddleX + paddleLength, yMax - paddleBottomMargin);
 
@@ -485,16 +514,20 @@ public class GameView extends View {
             deltaX = currentX - previousX;
             deltaY = currentY - previousY;
 
-            if (paddleX >= -(paddleLength -5) && paddleX <= (xMax - 5))
-            {
+            if (paddleX >= -(paddleLength -5) && paddleX <= (xMax - 5)) {
                 paddleX = paddleX + (currentX - previousX);
+                paddleDeltaX = (currentX - previousX);
             }
 
-            if (paddleY >= -(paddleLength - 5) && paddleY <= (yMax - 5))
-            paddleY = paddleY + (currentY - previousY);
+            if (paddleY >= -(paddleLength - 5) && paddleY <= (yMax - 5)) {
+              paddleY = paddleY + (currentY - previousY);
+              paddleDeltaY = (currentY - previousY);
+            }
             break;
           case MotionEvent.ACTION_UP:
               touchingScreen = false;
+              paddleDeltaX = 0;
+              paddleDeltaY = 0;
               break;
           case MotionEvent.ACTION_DOWN:
               touchingScreen = true;
