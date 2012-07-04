@@ -133,7 +133,6 @@ public class GameView extends View {
       this.setFocusableInTouchMode(true);
 
       resetGame();
-
    }
 
    private void resetBall()
@@ -161,8 +160,7 @@ public class GameView extends View {
       ballSpeedY = (standardBallSpeedY * multiplierY);
    }
 
-   private void detectBallCollisions()
-   {
+   private void detectBallCollisions() {
        boolean changeX = false;
        boolean fasterX, slowerX = false;
        boolean changeY = false;
@@ -182,54 +180,53 @@ public class GameView extends View {
            changeX = false;
            ballSpeedY *= -1;
            float paddleHitMultiplier = (ballX - (paddleTop.left + (paddleLength / paddleReboundBuffer))) / (paddleLength / paddleReboundBuffer);
-           float paddleMoveMultiplier = Math.abs(1 + (paddleDeltaX / xMax)) * 0.35f;
+           float paddleMoveMultiplier = (paddleDeltaX / xMax);
 
-           // if((paddleHitMultiplier >= .59 && ballSpeedX < 0) || (paddleHitMultiplier <= -.59 && ballSpeedX > 0))
-           // {
-           //     ballSpeedX *= -1;
-           //     //ballSpeedX += paddleDeltaX;
-           // }
-           //else {
+           if (Math.abs(ballSpeedX) >= 1.5) {
+             paddleHitMultiplier *= Math.abs(ballSpeedX);
+             paddleMoveMultiplier *= Math.abs(ballSpeedX);
+           } else {
+             paddleHitMultiplier *= 1.5;
+             paddleMoveMultiplier *= 1.5;
+           }
 
-             paddleHitMultiplier *= 3;
-             //if (paddleDeltaX == 0) { paddleDeltaX = 1; }
-             if (ballSpeedX > 0)
-             {
-               ballSpeedX += (paddleMoveMultiplier * paddleHitMultiplier);
-             }
-             else if (ballSpeedX < 0)
-             {
-               ballSpeedX += (paddleMoveMultiplier * paddleHitMultiplier);
-             }
-           //}
+           if (ballSpeedX != 0)
+           {
+             ballSpeedX += (Math.abs(paddleMoveMultiplier) * (ballSpeedX / Math.abs(ballSpeedX)));
+             ballSpeedX += paddleHitMultiplier;
+           }
+           else
+           {
+             ballSpeedX += paddleMoveMultiplier;
+             ballSpeedX += paddleHitMultiplier;
+           }
        }
-       else if((ballBounds.intersect(paddleLeft) || ballBounds.intersect(paddleRight)) && !isColliding)
-       {
+       else if((ballBounds.intersect(paddleLeft) || ballBounds.intersect(paddleRight)) && !isColliding) {
            isColliding = true;
            ballSpeedX *= -1;
            changeY = false;
-           float multiplier = (ballY - (paddleRight.top + (paddleLength / paddleReboundBuffer))) / paddleLength;
 
-           if (ballSpeedY > 0)
-           {
-               //if (ballY < (paddleRight.top + (paddleLength / paddleReboundBuffer))){
-                 ballSpeedY += (Math.abs(paddleDeltaY) * multiplier);
-               //} else { ballSpeedY += paddleDeltaY; }
+           float paddleHitMultiplier = (ballY - (paddleLeft.top + (paddleLength / paddleReboundBuffer))) / (paddleLength / paddleReboundBuffer);
+           float paddleMoveMultiplier = (paddleDeltaY / yMax);
+
+           if (Math.abs(ballSpeedY) >= 1.5) {
+             paddleHitMultiplier *= Math.abs(ballSpeedY);
+             paddleMoveMultiplier *= Math.abs(ballSpeedY);
+           } else {
+             paddleHitMultiplier *= 1.5;
+             paddleMoveMultiplier *= 1.5;
            }
 
-           else if (ballSpeedY < 0)
+           if (ballSpeedY != 0)
            {
-               //if (ballY > (paddleRight.bottom - (paddleLength / paddleReboundBuffer))) {
-                 ballSpeedY += (Math.abs(paddleDeltaY) * multiplier);
-               //} else { ballSpeedY -= paddleDeltaY; }
+             ballSpeedY += (Math.abs(paddleMoveMultiplier) * (ballSpeedY / Math.abs(ballSpeedY)));
+             ballSpeedY += paddleHitMultiplier;
            }
-
-           if(changeY)
+           else
            {
-               ballSpeedY *= -1;
-               //ballSpeedY += paddleDeltaY;
+             ballSpeedY += paddleMoveMultiplier;
+             ballSpeedY += paddleHitMultiplier;
            }
-
        }
        else
            isColliding = false;
@@ -341,12 +338,8 @@ public class GameView extends View {
                   break;
              }
          }
-         if (blocksToRemove.size() > 0)
-         {
-             for (Block b : blocksToRemove)
-             {
-                 lstBlocks.remove(b);
-             }
+         if (blocksToRemove.size() > 0) {
+             for (Block b : blocksToRemove) { lstBlocks.remove(b); }
              blocksToRemove.clear();
          }
      }
@@ -430,8 +423,6 @@ public class GameView extends View {
 
 
           paint.setColor(Color.GRAY);
-          //paint.setTextSize(20);
-          //int test = Float.floatToIntBits(paddleXFixed);
           canvas.drawRect(ballBounds, paint);
 
           for (Block b : lstBlocks)
@@ -468,8 +459,7 @@ public class GameView extends View {
       ballX += ballSpeedX;
       ballY += ballSpeedY;
 
-      if (!touchingScreen)
-      {
+      if (!touchingScreen) {
           if (paddleX < -(paddleLength / 5))
               paddleX += 5;
           else if (paddleX < 0)
@@ -491,15 +481,10 @@ public class GameView extends View {
               paddleY -= 1;
       }
 
-      if (burkeMode)
-      {
+      if (burkeMode) {
           paddleX = ballX - (paddleLength / 2);
           paddleY = ballY - (paddleLength / 2);
       }
-      // Detect collision and react
-
-      //paddleX = ballX - 35;
-      //paddleY = ballY - 35;
    }
 
    @Override
@@ -510,7 +495,6 @@ public class GameView extends View {
 
       switch (event.getAction()) {
          case MotionEvent.ACTION_MOVE:
-            // Modify rotational angles according to movement
             deltaX = currentX - previousX;
             deltaY = currentY - previousY;
 
@@ -540,14 +524,12 @@ public class GameView extends View {
       return true;  // Event handled
    }
 
-   public void resetPaddles()
-   {
+   public void resetPaddles() {
       paddleX = (xMax - paddleLength) / 2;
       paddleY = (yMax - paddleLength) / 2;
    }
 
-   public void resetBlocksAndPaddles()
-   {
+   public void resetBlocksAndPaddles() {
       set1 = new BlockSet(xMax/4, (yMax / 6), ((xMax - (xMax/2)) / 12), ((yMax - (yMax / 2)) / 12), 1);
       lstBlocks = set1.getBlocks();
       blocksRect = set1.getBounds();
@@ -563,11 +545,9 @@ public class GameView extends View {
       xMax = w-1;
       yMax = h-1;
 
-      if (beenReset)
-      {
+      if (beenReset) {
         resetBlocksAndPaddles();
         beenReset = false;
       }
-
    }
 }
