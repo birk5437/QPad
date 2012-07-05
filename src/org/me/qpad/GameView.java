@@ -41,7 +41,7 @@ public class GameView extends View {
    private boolean touchingScreen = false;
    private boolean isColliding = false;
 
-   private int lives = 1;
+   private int lives = 3;
    private int paddleBottomMargin = 20;
    private int score = 0;
    private int xMin = 0;          // This view's bounds
@@ -54,7 +54,7 @@ public class GameView extends View {
    
    private float standardBallSpeedX = 2;
    private float standardBallSpeedY = 2;
-   private float maxBallSpeed = 4.5f;
+   private float maxBallSpeed = 3.5f;
    private float ballSpeedChange = .5f;
    
    private float ballSpeedX;
@@ -66,7 +66,7 @@ public class GameView extends View {
    //private float paddleXFixed;
    private float paddleBuffer = 35f;
    private float paddleWidth = 5f; //default 5
-   private float paddleLength = 100f;
+   private float paddleLength = 110f;
    private float paddleReboundBuffer = 2.0f;  //(paddleLength/pRB) == size of the area on each end of the paddle that will make the ball bounce back in the opposite direction.  Must be >= 2
    private float fasterBallBuffer = 4.0f;
    private RectF ballBounds;      // Needed for Canvas.drawOval
@@ -180,14 +180,14 @@ public class GameView extends View {
            changeX = false;
            ballSpeedY *= -1;
            float paddleHitMultiplier = (ballX - (paddleTop.left + (paddleLength / paddleReboundBuffer))) / (paddleLength / paddleReboundBuffer);
-           float paddleMoveMultiplier = (paddleDeltaX / xMax);
+           float paddleMoveMultiplier = (paddleDeltaX / xMax) * 1.25f;
 
            if (Math.abs(ballSpeedX) >= 1.5) {
              paddleHitMultiplier *= Math.abs(ballSpeedX);
              paddleMoveMultiplier *= Math.abs(ballSpeedX);
            } else {
-             paddleHitMultiplier *= 1.5;
-             paddleMoveMultiplier *= 1.5;
+             paddleHitMultiplier *= 1.7;
+             paddleMoveMultiplier *= 1.7;
            }
 
            if (ballSpeedX != 0)
@@ -207,14 +207,14 @@ public class GameView extends View {
            changeY = false;
 
            float paddleHitMultiplier = (ballY - (paddleLeft.top + (paddleLength / paddleReboundBuffer))) / (paddleLength / paddleReboundBuffer);
-           float paddleMoveMultiplier = (paddleDeltaY / yMax);
+           float paddleMoveMultiplier = (paddleDeltaY / yMax) * 1.25f;
 
            if (Math.abs(ballSpeedY) >= 1.5) {
              paddleHitMultiplier *= Math.abs(ballSpeedY);
              paddleMoveMultiplier *= Math.abs(ballSpeedY);
            } else {
-             paddleHitMultiplier *= 1.5;
-             paddleMoveMultiplier *= 1.5;
+             paddleHitMultiplier *= 1.7;
+             paddleMoveMultiplier *= 1.7;
            }
 
            if (ballSpeedY != 0)
@@ -348,7 +348,7 @@ public class GameView extends View {
    private void resetGame()
    {
       score = 0;
-      lives = 100;
+      lives = 3;
       gameOver = false;
 
       resetBall();
@@ -412,9 +412,11 @@ public class GameView extends View {
       else
       {
           ballBounds.set(ballX-ballRadius, ballY-ballRadius, ballX+ballRadius, ballY+ballRadius);
+
           paddleLeft.set(1 - paddleBuffer, paddleY, paddleWidth + 1, paddleY + paddleLength);
           paddleRight.set(xMax - paddleWidth, paddleY, xMax + paddleBuffer, paddleY + paddleLength);
-          paddleTop.set(paddleX, 1, paddleX + paddleLength, paddleWidth + 1);
+
+          paddleTop.set(paddleX, 1 - paddleBuffer, paddleX + paddleLength, paddleWidth + 1);
           paddleBottom.set(paddleX, yMax - paddleWidth - paddleBottomMargin, paddleX + paddleLength, yMax - paddleBottomMargin);
 
           paint.setColor(Color.GREEN);
